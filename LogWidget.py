@@ -11,15 +11,9 @@ import webbrowser
 from specklepy.logging import metrics
 from specklepy.api.credentials import Account
 
-import inspect
-
-SPECKLE_COLOR = (59,130,246)
-SPECKLE_COLOR_LIGHT = (69,140,255)
-
-BACKGR_COLOR = f"background-color: rgb{str(SPECKLE_COLOR)};"
-BACKGR_COLOR_LIGHT = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
-
-BACKGR_COLOR_GREY = f"background-color: Gainsboro;"
+from pyqt_ui.global_resources import (
+    BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY
+)
 
 class LogWidget(QWidget):
     

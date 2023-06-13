@@ -48,36 +48,19 @@ from specklepy.api.wrapper import StreamWrapper
 from specklepy.api.client import SpeckleClient
 from specklepy.logging import metrics
 
-from speckle.utils.validation import tryGetStream
+from pyqt_ui.global_resources import (
+    COLOR_HIGHLIGHT, 
+    SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
+    ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
+    ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
+    ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
+    COLOR, BACKGR_COLOR, BACKGR_COLOR_LIGHT,
+)
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), os.path.join("ui", "dockwidget_main.ui") )
 )
-
-COLOR_HIGHLIGHT = (210,210,210)
-
-SPECKLE_COLOR = (59,130,246)
-SPECKLE_COLOR_LIGHT = (69,140,255)
-ICON_LOGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "logo-slab-white@0.5x.png")
-
-ICON_SEARCH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "magnify.png")
-
-ICON_DELETE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "delete.png")
-ICON_DELETE_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "delete-blue.png")
-
-ICON_SEND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-send.png")
-ICON_RECEIVE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-receive.png")
-
-ICON_SEND_BLACK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-send-black.png")
-ICON_RECEIVE_BLACK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-receive-black.png")
-
-ICON_SEND_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-send-blue.png")
-ICON_RECEIVE_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "cube-receive-blue.png")
-
-COLOR = f"color: rgb{str(SPECKLE_COLOR)};"
-BACKGR_COLOR = f"background-color: rgb{str(SPECKLE_COLOR)};"
-BACKGR_COLOR_LIGHT = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
 
 class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 

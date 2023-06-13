@@ -40,19 +40,12 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
     elevationLayerDropdown: QtWidgets.QComboBox
     
     attrDropdown: QtWidgets.QComboBox
-
     dataStorage: Any = None
-
-    #Events
-    #handleStreamCreate = pyqtSignal(Account, str, str, bool)
 
     def __init__(self, parent=None):
         super(MappingSendDialog,self).__init__(parent,QtCore.Qt.WindowStaysOnTopHint)
         self.setupUi(self)
         self.setMinimumWidth(600)
-        #self.dialog_button_box.setMaximumWidth(30)
-        #self.more_info.setMaximumWidth(30)
-        #self.setWindowTitle("Add custom transformations")
 
         self.addTransform.setStyleSheet("QPushButton {color: black; padding:3px;padding-left:5px;border: none; } QPushButton:hover { background-color: lightgrey}")
         self.removeTransform.setStyleSheet("QPushButton {color: black; padding:3px;padding-left:5px;border: none; } QPushButton:hover { background-color: lightgrey}")
@@ -67,25 +60,15 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
         self.dialog_button_box.clicked.connect(self.onOkClicked)
         self.more_info.clicked.connect(self.onMoreInfo)
 
-
         return
-        self.speckle_client = speckle_client
 
-        self.name_field.textChanged.connect(self.nameCheck)
-        self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True) 
-        self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.onOkClicked)
-        self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.onCancelClicked)
-        
-        self.populate_accounts_dropdown()
     
     def runSetup(self):
         
-        #get_transformations(self.dataStorage)
         self.attr_label.setEnabled(False)
         self.attrDropdown.setEnabled(False)
 
         self.populateTransforms()
-        #self.populateLayers()
         self.populateLayersByTransform()
         self.populateSavedTransforms()
         self.populateSavedElevationLayer()
@@ -122,10 +105,6 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
                     listItem.setIcon(icon)
 
                     self.transformationsList.addItem(listItem) 
-
-        #if self.dataStorage.savedTransforms is not None and isinstance(self.dataStorage.savedTransforms, List):
-        #    for item in self.dataStorage.savedTransforms:
-        #        self.transformationsList.addItem(QListWidgetItem(item))
 
     def onAddTransform(self):
         
@@ -174,7 +153,6 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
 
         from speckle.utils.project_vars import set_transformations
         if self.transformationsList.currentItem() is not None:
-            #if len(self.layerDropdown.currentText())>1 and len(self.transformDropdown.currentText())>1:
             listItem = self.transformationsList.currentItem().text()
             print(listItem)
             
@@ -376,5 +354,5 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
     def onMoreInfo(self):
-        webbrowser.open("https://github.com/specklesystems/speckle-qgis/tree/main/speckle/automation/Automation.md")
+        webbrowser.open("https://speckle.guide/user/qgis.html#transformations")
         

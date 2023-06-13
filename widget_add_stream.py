@@ -1,20 +1,17 @@
 import inspect
 import os
 from typing import List, Union
-from pyqt_ui.logger import logToUser
-import pyqt_ui.dockwidget_main
-from qgis.core import Qgis
 
-from speckle.utils.panel_logging import logger
-from qgis.PyQt import QtWidgets, uic, QtCore
-from qgis.PyQt.QtCore import pyqtSignal
+from pyqt_ui.logger import logToUser
+
+from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtCore import pyqtSignal
+
 from specklepy.api.models import Stream
 from specklepy.api.client import SpeckleClient
 from specklepy.logging.exceptions import SpeckleException
-from speckle.utils.utils import logger
 from specklepy.api.credentials import get_local_accounts #, StreamWrapper
 from specklepy.api.wrapper import StreamWrapper
-from gql import gql
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -109,9 +106,6 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             if isinstance(self.stream_results, SpeckleException):
                 logToUser("Selected stream cannot be accessed: "+ str(self.stream_results.message), level = 1, func = inspect.stack()[0][3])
                 return
-            #elif index == -1 or len(self.stream_results) == 0:
-            #    logger.logToUser("Select stream from \"Search Results\". No stream selected", Qgis.Warning)
-            #    return 
             else:
                 try:
                     index = self.search_results_list.currentIndex().row()

@@ -24,28 +24,22 @@
 
 import inspect
 import os
-import threading
+
 from pyqt_ui.widget_transforms import MappingSendDialog
 from speckle.converter.layers import getAllLayers, getLayers
 from speckle.DataStorage import DataStorage
 from specklepy.objects.GIS.layers import RasterLayer, VectorLayer
 from pyqt_ui.LogWidget import LogWidget
 from pyqt_ui.logger import logToUser
-#from speckle_qgis import SpeckleQGIS
-import pyqt_ui.dockwidget_main
-from qgis.core import Qgis, QgsProject, QgsFields, QgsSingleSymbolRenderer, QgsLayerTreeGroup, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
-from specklepy.logging.exceptions import (SpeckleException, GraphQLException)
-from qgis.PyQt import QtWidgets, uic
-from qgis.PyQt import QtGui
-from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QCheckBox, QListWidgetItem, QAction, QDockWidget, QVBoxLayout, QHBoxLayout, QWidget, QLabel
-from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import pyqtSignal, Qt 
-from speckle.utils.panel_logging import logger
-from specklepy.api.credentials import get_local_accounts
 
-from specklepy.api.wrapper import StreamWrapper
-from specklepy.api.client import SpeckleClient
+from qgis.core import QgsFields, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
+from specklepy.logging.exceptions import (SpeckleException, GraphQLException)
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
+
 from specklepy.logging import metrics
 
 from pyqt_ui.global_resources import (

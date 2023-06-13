@@ -2,19 +2,12 @@ import inspect
 import os
 from typing import List, Tuple, Union
 from pyqt_ui.logger import logToUser
-import pyqt_ui.dockwidget_main
-from qgis.core import Qgis
 
-from speckle.utils.panel_logging import logger
-from qgis.PyQt import QtWidgets, uic, QtCore
-from qgis.PyQt.QtCore import pyqtSignal
-from specklepy.api.models import Stream
+from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtCore import pyqtSignal
+
 from specklepy.api.client import SpeckleClient
-from specklepy.logging.exceptions import SpeckleException
-from speckle.utils.utils import logger
-from specklepy.api.credentials import Account, get_local_accounts #, StreamWrapper
-from specklepy.api.wrapper import StreamWrapper
-from gql import gql
+
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(

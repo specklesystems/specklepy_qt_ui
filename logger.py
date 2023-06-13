@@ -1,9 +1,8 @@
 
-import qgis.PyQt 
-from qgis.PyQt.QtWidgets import QMainWindow, QMessageBox, QPushButton, QPushButton, QLabel, QVBoxLayout, QWidget
-from qgis.PyQt import QtCore
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton, QPushButton, QLabel, QVBoxLayout, QWidget
+from PyQt5 import QtCore
 
-from plugin_utils.helpers import splitTextIntoLines 
+from pyqt_ui.utils import splitTextIntoLines 
 
 def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False):
       print("Log to user")
@@ -16,9 +15,11 @@ def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue
                   if func is not None: 
                         msg += "::" + str(func)
             
-            from speckle.utils.panel_logging import logger
-            logger.writeToLog(msg, level)
-            
+            try: # ATM only for QGIS 
+                  from speckle.utils.panel_logging import logger
+                  logger.writeToLog(msg, level)
+            except: pass
+
             if dockwidget is None: return
 
             new_msg = splitTextIntoLines(msg)

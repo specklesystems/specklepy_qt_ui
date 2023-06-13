@@ -1,12 +1,10 @@
 
-import threading
-import time
 from typing import Any, List
-from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, pyqtSignal, QTranslator, QRect, QObject
-from qgis.PyQt.QtWidgets import QAction, QDockWidget, QVBoxLayout, QWidget, QPushButton
-from qgis.PyQt import QtWidgets
-from qgis.PyQt.QtGui import QPainter
+
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton
+
 import webbrowser
 from specklepy.logging import metrics
 from specklepy.api.credentials import Account
@@ -30,7 +28,6 @@ class LogWidget(QWidget):
     # constructor
     def __init__(self, parent=None):
         super(LogWidget, self).__init__(parent)
-        print("start LogWidget")
         self.parentWidget = parent
         print(self.parentWidget)
         self.max_msg = 10

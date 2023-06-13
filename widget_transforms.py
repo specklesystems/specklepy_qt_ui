@@ -4,21 +4,12 @@ from typing import Any, List, Tuple, Union
 from speckle.converter.layers import getAllLayers
 from speckle.converter.layers.utils import getElevationLayer, getLayerGeomType
 from pyqt_ui.logger import displayUserMsg, logToUser
-import pyqt_ui.dockwidget_main
-from qgis.core import Qgis, QgsProject, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
 
-from speckle.utils.panel_logging import logger
-from qgis.PyQt import QtWidgets, uic, QtCore
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QCheckBox, QListWidgetItem
-from qgis.PyQt.QtCore import pyqtSignal
-from specklepy.api.models import Stream
-from specklepy.api.client import SpeckleClient
-from specklepy.logging.exceptions import SpeckleException
-from speckle.utils.utils import logger
-from specklepy.api.credentials import Account, get_local_accounts #, StreamWrapper
-from specklepy.api.wrapper import StreamWrapper
-from gql import gql
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
+
+from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtWidgets import QListWidgetItem
+
 from specklepy.logging import metrics
 from osgeo import gdal 
 import webbrowser

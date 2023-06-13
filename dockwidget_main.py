@@ -52,7 +52,7 @@ from speckle.utils.validation import tryGetStream
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), os.path.join("ui", "speckle_qgis_dialog_base.ui") )
+    os.path.join(os.path.dirname(__file__), os.path.join("ui", "dockwidget_main.ui") )
 )
 
 COLOR_HIGHLIGHT = (210,210,210)

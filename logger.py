@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QPushButton, QPushButton, QLabel, QVBoxLayout, QWidget
 from PyQt5 import QtCore
 
-from pyqt_ui.utils import splitTextIntoLines 
+from specklepy_qt_ui.utils import splitTextIntoLines 
 
 def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False):
       print("Log to user")

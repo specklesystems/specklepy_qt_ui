@@ -3,7 +3,7 @@ import os
 from typing import Any, List, Tuple, Union
 from speckle.converter.layers import getAllLayers
 from speckle.converter.layers.utils import getElevationLayer, getLayerGeomType
-from pyqt_ui.logger import displayUserMsg, logToUser
+from specklepy_qt_ui.logger import displayUserMsg, logToUser
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
 

@@ -24,3 +24,11 @@ COLOR = f"color: rgb{str(SPECKLE_COLOR)};"
 BACKGR_COLOR = f"background-color: rgb{str(SPECKLE_COLOR)};"
 BACKGR_COLOR_LIGHT = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
 BACKGR_COLOR_GREY = f"background-color: Gainsboro;"
+
+
+ICON_XXL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/size-xxl.png")
+ICON_RASTER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/legend_raster.png")
+ICON_POLYGON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/legend_polygon.png")
+ICON_LINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/legend_line.png")
+ICON_POINT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/legend_point.png")
+ICON_GENERIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", "/legend_generic.png")

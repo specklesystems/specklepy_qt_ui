@@ -1,7 +1,7 @@
 import inspect
 import os
 from typing import List, Tuple, Union
-from pyqt_ui.logger import logToUser
+from specklepy_qt_ui.logger import logToUser
 
 from qgis.PyQt import QtWidgets, uic, QtCore
 from qgis.PyQt.QtCore import pyqtSignal

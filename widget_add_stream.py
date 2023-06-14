@@ -2,7 +2,7 @@ import inspect
 import os
 from typing import List, Union
 
-from pyqt_ui.logger import logToUser
+from specklepy_qt_ui.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal

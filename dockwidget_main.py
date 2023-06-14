@@ -3,31 +3,34 @@
 import inspect
 import os
 
-from pyqt_ui.widget_transforms import MappingSendDialog
-from speckle.converter.layers import getAllLayers, getLayers
-from speckle.DataStorage import DataStorage
-from specklepy.objects.GIS.layers import RasterLayer, VectorLayer
-from pyqt_ui.LogWidget import LogWidget
-from pyqt_ui.logger import logToUser
-
-from qgis.core import QgsFields, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
-from specklepy.logging.exceptions import (SpeckleException, GraphQLException)
-from PyQt5 import QtWidgets, uic
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
-from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
-
-from specklepy.logging import metrics
-
-from pyqt_ui.global_resources import (
+from specklepy_qt_ui.widget_transforms import MappingSendDialog
+from specklepy_qt_ui.LogWidget import LogWidget
+from specklepy_qt_ui.logger import logToUser
+from specklepy_qt_ui.DataStorage import DataStorage
+from specklepy_qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
     ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
     ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
     COLOR, BACKGR_COLOR, BACKGR_COLOR_LIGHT,
+    ICON_XXL, ICON_RASTER, ICON_POLYGON, ICON_LINE, ICON_POINT, ICON_GENERIC,
 )
+
+from specklepy.objects.GIS.layers import RasterLayer, VectorLayer
+from specklepy.logging.exceptions import (SpeckleException, GraphQLException)
+from specklepy.logging import metrics
+
+
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
+from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
+
+
+#from qgis.core import QgsFields, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
+
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -52,9 +55,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     dataStorage: DataStorage = None
     mappingSendDialog = None 
 
-    addLayerToGroup = pyqtSignal(str, str, str, str, VectorLayer, QgsFields, list)
-    addBimLayerToGroup = pyqtSignal(str, str, str, QgsFields, list)
-    addCadLayerToGroup = pyqtSignal(str, str, str, QgsFields, list)
+    addLayerToGroup = pyqtSignal(str, str, str, str, VectorLayer, "QgsFields", list)
+    addBimLayerToGroup = pyqtSignal(str, str, str, "QgsFields", list)
+    addCadLayerToGroup = pyqtSignal(str, str, str, "QgsFields", list)
     addRasterLayerToGroup = pyqtSignal(str, str, str, RasterLayer)
 
     def __init__(self, parent=None):
@@ -128,10 +131,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def runSetup(self, plugin):
         
-        self.addDataStorage(plugin)
+        #self.addDataStorage(plugin)
         self.addLabel(plugin)
         self.addProps(plugin)
-        self.createMappingDialog()
+        #self.createMappingDialog()
 
     def addProps(self, plugin):
         
@@ -158,12 +161,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def addDataStorage(self, plugin):
         self.dataStorage = plugin.dataStorage
         self.dataStorage.project = plugin.qgis_project
-        root = self.dataStorage.project.layerTreeRoot()
-        self.dataStorage.all_layers = getAllLayers(root)
     
     def createMappingDialog(self):
-        root = self.dataStorage.project.layerTreeRoot()
-        self.dataStorage.all_layers = getAllLayers(root)
+        #root = self.dataStorage.project.layerTreeRoot()
+        #self.dataStorage.all_layers = getAllLayers(root)
 
         if self.mappingSendDialog is None:
             self.mappingSendDialog = MappingSendDialog(None)
@@ -296,7 +297,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.reloadButton.clicked.connect(lambda: self.refreshClicked(plugin))
             self.closeButton.clicked.connect(lambda: self.closeClicked(plugin))
             self.saveSurveyPoint.clicked.connect(plugin.set_survey_point)
-            self.saveLayerSelection.clicked.connect(lambda: self.populateLayerDropdown(plugin))
+
             self.sendModeButton.clicked.connect(lambda: self.setSendMode(plugin))
             self.layerSendModeDropdown.currentIndexChanged.connect( lambda: self.layerSendModeChange(plugin) )
             self.receiveModeButton.clicked.connect(lambda: self.setReceiveMode(plugin))
@@ -412,8 +413,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         try:
 
             self.populateLayerSendModeDropdown()
-            self.populateLayerDropdown(plugin, False)
-            #items = [self.layersWidget.item(x).text() for x in range(self.layersWidget.count())]
             self.populateProjectStreams(plugin)
             self.populateSurveyPoint(plugin)
 
@@ -469,37 +468,38 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
 
-    def populateLayerDropdown(self, plugin, bySelection: bool = True):
+    def populateSavedLayerDropdown(self, plugin):
+        
+        try:
+            print(self.dataStorage.saved_layers)
+            if not self: return
+            self.layersWidget.clear()
+
+            self.dataStorage.current_layers.clear() 
+            layers = self.dataStorage.saved_layers
+            print(layers)
+            if not layers: return 
+            
+            for i, layer in enumerate(layers):
+                self.dataStorage.current_layers.append(layer) 
+                listItem = self.fillLayerList(layer[0], layer[2])
+                self.layersWidget.addItem(listItem)
+
+            self.layersWidget.setIconSize(QtCore.QSize(20, 20))
+            self.runBtnStatusChanged(plugin)
+        except Exception as e: 
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
+
+    def populateSelectedLayerDropdown(self, plugin):
         
         try:
             if not self: return
-            from speckle.utils.project_vars import set_project_layer_selection
-            
             self.layersWidget.clear()
-            nameDisplay = [] 
-            project = plugin.qgis_project
 
-            if bySelection is False: # read from project data 
-
-                all_layers_ids = [l.id() for l in project.mapLayers().values()]
-                for layer_tuple in plugin.dataStorage.current_layers:
-                    if layer_tuple[1].id() in all_layers_ids: 
-                        listItem = self.fillLayerList(layer_tuple[1]) 
-                        self.layersWidget.addItem(listItem)
-
-            else: # read selected layers 
-                # Fetch selected layers
-
-                #plugin.current_layers = []
-                self.dataStorage.current_layers.clear() 
-                layers = getLayers(plugin, bySelection) # List[QgsLayerTreeNode]
-                for i, layer in enumerate(layers):
-                    #plugin.current_layers.append((layer.name(), layer)) 
-                    self.dataStorage.current_layers.append((layer.name(), layer)) 
-                    listItem = self.fillLayerList(layer)
-                    self.layersWidget.addItem(listItem)
-
-                set_project_layer_selection(plugin)
+            for layer_tuple in plugin.dataStorage.current_layers:
+                listItem = self.fillLayerList(layer_tuple[0], layer_tuple[2]) 
+                self.layersWidget.addItem(listItem)
 
             self.layersWidget.setIconSize(QtCore.QSize(20, 20))
             self.runBtnStatusChanged(plugin)
@@ -507,27 +507,41 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
 
-    def fillLayerList(self, layer):
+    def fillLayerList(self, layer, layerType = "generic"):
         try:
             icon_xxl = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", " size-xxl.png") 
             listItem = QListWidgetItem(layer.name()) 
 
-            if isinstance(layer, QgsRasterLayer) and layer.width()*layer.height() > 1000000:
-                    listItem.setIcon(QIcon(icon_xxl))
-            
-            elif isinstance(layer, QgsVectorLayer) and layer.featureCount() > 20000:
-                    listItem.setIcon(QIcon(icon_xxl))
+            try: # if QGIS
+                from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
 
-            else: 
-                icon = QgsIconUtils().iconForLayer(layer)
+                if isinstance(layer, QgsRasterLayer) and layer.width()*layer.height() > 1000000:
+                        listItem.setIcon(QIcon(icon_xxl))
+                
+                elif isinstance(layer, QgsVectorLayer) and layer.featureCount() > 20000: 
+                        listItem.setIcon(QIcon(icon_xxl))
+                else:
+                    from qgis.core import QgsIconUtils 
+                    icon = QgsIconUtils().iconForLayer(layer)
+                    listItem.setIcon(icon)
+                    print(icon)
+            except Exception as e:
+                print("e")
+                icons = {
+                    "generic": ICON_GENERIC,
+                    "polygon": ICON_POLYGON,
+                    "point": ICON_POINT,
+                    "line": ICON_LINE,
+                    "raster": ICON_RASTER,
+                }
+                icon = QIcon(icons[layerType])
                 listItem.setIcon(icon)
-            
+        
             return listItem
         
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
-
 
     def populateSurveyPoint(self, plugin):
         if not self:
@@ -647,8 +661,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                     if b.name == branchName:
                         branch = b
                         break
-            print(branch)
-            #if len(branch.commits.items)>0:
+            
             self.commitDropdown.addItem("Latest commit from this branch")
             self.commitDropdown.addItems(
                 [f"{commit.id}"+ " | " + f"{commit.message}" for commit in branch.commits.items]

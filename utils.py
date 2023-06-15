@@ -19,3 +19,5 @@ def splitTextIntoLines(text: str = "", number: int= 70) -> str:
     except Exception as e:
         print(e)
         print(text)
+    return msg
+

@@ -21,7 +21,7 @@ def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue
             except: pass
 
             if dockwidget is None: return
-
+            
             new_msg = splitTextIntoLines(msg)
             dockwidget.msgLog.sendMessage.emit(new_msg, level, url, blue)
             

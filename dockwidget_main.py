@@ -55,10 +55,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     dataStorage: DataStorage = None
     mappingSendDialog = None 
 
-    addLayerToGroup = pyqtSignal(str, str, str, str, VectorLayer, "QgsFields", list)
-    addBimLayerToGroup = pyqtSignal(str, str, str, "QgsFields", list)
-    addCadLayerToGroup = pyqtSignal(str, str, str, "QgsFields", list)
-    addRasterLayerToGroup = pyqtSignal(str, str, str, RasterLayer)
+    signal_1 = pyqtSignal(object)
+    signal_2 = pyqtSignal(object)
+    signal_3 = pyqtSignal(object)
+    signal_4 = pyqtSignal(object)
 
     def __init__(self, parent=None):
         """Constructor."""

@@ -16,8 +16,6 @@ from specklepy_qt_ui.global_resources import (
     COLOR, BACKGR_COLOR, BACKGR_COLOR_LIGHT,
     ICON_XXL, ICON_RASTER, ICON_POLYGON, ICON_LINE, ICON_POINT, ICON_GENERIC,
 )
-
-from specklepy.objects.GIS.layers import RasterLayer, VectorLayer
 from specklepy.logging.exceptions import (SpeckleException, GraphQLException)
 from specklepy.logging import metrics
 
@@ -27,9 +25,6 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
-
-
-#from qgis.core import QgsFields, QgsVectorLayer, QgsRasterLayer, QgsIconUtils 
 
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -282,14 +277,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             return
         
     def addMsg(self, text:str, level:int, url:str, blue:bool):
-        #t_name = threading.current_thread().getName()
-        #print(t_name)
         self.msgLog.addButton(text, level, url, blue)
 
     def setupOnFirstLoad(self, plugin):
         try:
-            self.runButton.clicked.connect(plugin.onRunButtonClicked)
-
+            
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
 
@@ -509,7 +501,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def fillLayerList(self, layer, layerType = "generic"):
         try:
-            icon_xxl = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img", " size-xxl.png") 
+            icon_xxl = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", " size-xxl.png") 
             listItem = QListWidgetItem(layer.name()) 
 
             try: # if QGIS

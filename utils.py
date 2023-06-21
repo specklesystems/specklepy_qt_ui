@@ -21,3 +21,7 @@ def splitTextIntoLines(text: str = "", number: int= 70) -> str:
         print(text)
     return msg
 
+#def removeSpecialCharacters(text: str) -> str:
+#    new_text = text.replace("[","_").replace("]","_").replace(" ","_").replace("-","_").replace("(","_").replace(")","_").replace(":","_").replace("\\","_").replace("/","_").replace("\"","_").replace("&","_").replace("@","_").replace("$","_").replace("%","_").replace("^","_")
+#    return new_text
+

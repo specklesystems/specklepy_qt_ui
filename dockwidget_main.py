@@ -2,6 +2,7 @@
 
 import inspect
 import os
+from specklepy_qt_ui.widget_custom_crs import CustomCRSDialog
 
 from specklepy_qt_ui.widget_transforms import MappingSendDialog
 from specklepy_qt_ui.LogWidget import LogWidget
@@ -49,6 +50,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     msgLog: LogWidget = None
     dataStorage: DataStorage = None
     mappingSendDialog = None 
+    custom_crs_modal = None 
 
     signal_1 = pyqtSignal(object)
     signal_2 = pyqtSignal(object)
@@ -70,7 +72,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.streams_add_button.setFlat(True)
         self.streams_remove_button.setFlat(True)
-        self.saveSurveyPoint.setFlat(True)
+        #self.saveSurveyPoint.setFlat(True)
         self.saveLayerSelection.setFlat(True)
         self.reloadButton.setFlat(True)
         self.closeButton.setFlat(True)
@@ -88,7 +90,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
 
         self.saveLayerSelection.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
-        self.saveSurveyPoint.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
+        #self.saveSurveyPoint.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
         self.reloadButton.setStyleSheet("QPushButton {text-align: left;} QPushButton:hover { " + f"{COLOR}" + " }")
         self.closeButton.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
 
@@ -113,6 +115,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         #   l_item = self.verticalLayout.itemAt(i).widget()
 
         # add row with "experimental" checkbox 
+        r'''
         box = QWidget()
         box.layout = QHBoxLayout(box)
         btn = QtWidgets.QCheckBox("Send/receive in the background (experimental!)")
@@ -122,6 +125,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.formLayout.insertRow(10,box)
         self.experimental = btn
         self.experimental.setChecked(True)
+        '''
 
 
     def runSetup(self, plugin):
@@ -142,7 +146,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.msgLog.active_account = plugin.dataStorage.active_account
         self.msgLog.speckle_version = plugin.version
 
-        # add row with "experimental" checkbox 
+        # add Transforms button
+        r'''
         box = QWidget()
         box.layout = QHBoxLayout(box)
         btn = QtWidgets.QPushButton("Apply transformations on Send")
@@ -152,6 +157,13 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         box.layout.setContentsMargins(65, 0, 0, 0)
         self.formLayout.insertRow(9,box)
         self.setMapping = btn
+        '''
+        
+        self.setMapping.setFlat(True)
+        self.setMapping.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
+        
+        self.crsSettings.setFlat(True)
+        self.crsSettings.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
     
     def addDataStorage(self, plugin):
         self.dataStorage = plugin.dataStorage
@@ -288,7 +300,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.streams_add_button.clicked.connect( plugin.onStreamAddButtonClicked )
             self.reloadButton.clicked.connect(lambda: self.refreshClicked(plugin))
             self.closeButton.clicked.connect(lambda: self.closeClicked(plugin))
-            self.saveSurveyPoint.clicked.connect(plugin.set_survey_point)
+
+            self.crsSettings.clicked.connect(self.customCRSDialogCreate)
+            #self.saveSurveyPoint.clicked.connect(plugin.set_survey_point)
 
             self.sendModeButton.clicked.connect(lambda: self.setSendMode(plugin))
             self.layerSendModeDropdown.currentIndexChanged.connect( lambda: self.layerSendModeChange(plugin) )
@@ -406,7 +420,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             self.populateLayerSendModeDropdown()
             self.populateProjectStreams(plugin)
-            self.populateSurveyPoint(plugin)
 
             self.runBtnStatusChanged(plugin)
             self.runButton.setEnabled(False) 
@@ -535,17 +548,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
 
-    def populateSurveyPoint(self, plugin):
-        if not self:
-            return
-        try:
-            self.surveyPointLat.clear()
-            self.surveyPointLat.setText(str(plugin.lat))
-            self.surveyPointLon.clear()
-            self.surveyPointLon.setText(str(plugin.lon))
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
 
     def enableElements(self, plugin):
         try:
@@ -562,7 +564,58 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
+    
+    def customCRSDialogCreate(self):
+        try:
+            self.custom_crs_modal = CustomCRSDialog(None)
+            self.custom_crs_modal.dataStorage = self.dataStorage
+            self.custom_crs_modal.dialog_button_box.button(QtWidgets.QDialogButtonBox.Close).clicked.connect(self.customCRSCreate)
+            #self.custom_crs_modal.handleBranchCreate.connect(self.handleBranchCreate)
+            self.custom_crs_modal.show()
+            #self.custom_crs_modal.populateSurveyPoint()
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
+    
+    
+    def customCRSApply(self):
+        index = self.custom_crs_modal.modeDropdown.currentIndex()
+        if index == 0: #create custom CRS
+            self.customCRSCreate()
+        if index == 1:
+            self.crsOffsetsApply()
 
+    def crsOffsetsApply(self):
+        try:
+            from speckle.utils.project_vars import set_crs_offsets_rotation
+
+            if float(self.custom_crs_modal.offsetX.text()) is not None and float(self.custom_crs_modal.offsetY.text()) is not None:
+                self.dataStorage.crs_offset_x = float(self.custom_crs_modal.offsetX.text())
+                self.dataStorage.crs_offset_y = float(self.custom_crs_modal.offsetY.text())
+            if float(self.custom_crs_modal.rotation.text()) is not None:
+                self.dataStorage.crs_rotation = float(self.custom_crs_modal.rotation.text())
+            set_crs_offsets_rotation(self.dataStorage, self)
+            self.custom_crs_modal.close()
+        except: pass 
+
+    def customCRSCreate(self):
+        try: 
+            vals =[ str(self.custom_crs_modal.surveyPointLat.text()), str(self.custom_crs_modal.surveyPointLon.text()) ]
+            custom_lat, custom_lon = [float(i.replace(" ","")) for i in vals]
+            if custom_lat>180 or custom_lat<-180 or custom_lon >180 or custom_lon<-180:
+                logToUser("LAT LON values must be within (-180, 180). You can right-click on the canvas location to copy coordinates in WGS 84", level = 1, plugin=self)
+                return True 
+
+            from speckle.utils.project_vars import set_survey_point, setProjectReferenceSystem
+            self.dataStorage.custom_lat = custom_lat
+            self.dataStorage.custom_lon = custom_lon
+            set_survey_point(self.dataStorage, self)
+            setProjectReferenceSystem(self.dataStorage, self)
+
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
+    
     def populateProjectStreams(self, plugin):
         try:
             from speckle.utils.project_vars import set_project_streams

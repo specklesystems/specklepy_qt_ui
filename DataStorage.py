@@ -1,5 +1,5 @@
 
-from typing import List, Tuple, Union, Any 
+from typing import List, Optional, Tuple, Union, Any 
 
 
 class DataStorage:
@@ -13,6 +13,13 @@ class DataStorage:
 
     currentCRS = None
     currentUnits = "m"
+
+    custom_lat: Optional[float] = None
+    custom_lon: Optional[float] = None
+    
+    crs_offset_x: Optional[float] = None 
+    crs_offset_y: Optional[float] = None 
+    crs_rotation: Optional[float] = None 
 
     current_layers: Union[List[Tuple[Any, str, str]], None] = None 
     saved_layers: Union[List, None] = None 

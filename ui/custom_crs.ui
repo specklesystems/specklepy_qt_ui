@@ -20,41 +20,6 @@
          <number>10</number>
         </property>
 
-        <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="rightMargin">
-          <number>30</number>
-          </property>
-          <item row = "0">
-          <widget class="QLabel" name="generalDescription">
-            <property name="text">
-            <string>Modifying project center is useful when you need to: 
- - Send data (so you can receive correctly in a non-GIS application)
- - Receive data (if data was sent from non-GIS application).
-
-You can choose to create a custom Coordinate Reference System, 
-based on Traverse Mercator, or use the existing one and modify 
-it's Speckle properties by adding X- and Y- offsets. 
-
-Rotaton angle in both cases will only affect Speckle object properties
-during Send/Receive operations and will not be visible in QGIS project.</string>
-            </property>
-          </widget>
-          </item>
-            <item row = "1">
-              <spacer name="horizontalSpacer">
-                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-                </property>
-              </spacer>
-            </item>
-            </layout>
-        </item>
-
-        
         <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout">
             
@@ -72,6 +37,15 @@ during Send/Receive operations and will not be visible in QGIS project.</string>
                   </widget>
                 </item>
               </layout>
+            </item>
+
+            
+            <item row="3" >
+              <widget class="QLabel" name="description">
+                <property name="text">
+                <string> </string>
+                </property>
+              </widget>
             </item>
 
             <item row="4" >
@@ -213,13 +187,6 @@ during Send/Receive operations and will not be visible in QGIS project.</string>
             </item>
 
 
-            <item row="20" >
-              <widget class="QLabel" name="description">
-                <property name="text">
-                <string> </string>
-                </property>
-              </widget>
-            </item>
             
         </layout>
         </item>
@@ -248,7 +215,7 @@ during Send/Receive operations and will not be visible in QGIS project.</string>
     <item row="2" column="0">
       <widget class="QDialogButtonBox" name="dialog_button_box">
       <property name="standardButtons">
-        <set>QDialogButtonBox::Apply</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Apply</set>
       </property>
       </widget>
     </item>

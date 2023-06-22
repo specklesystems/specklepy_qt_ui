@@ -34,20 +34,16 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
         super(CustomCRSDialog,self).__init__(parent, QtCore.Qt.WindowStaysOnTopHint)
         self.setupUi(self)
         self.setWindowTitle("Set project center on Send/Receive")  
-        self.description.setText("Use this option when you want to have minimal size and shape distortions\
-                                \nwhen receiving the data from/sending to a non-GIS application.\
-                                \n\nSpecify the origin Lat, Lon in geographic coordinates, \
-                                \nrotation angle from True North in degrees and click Apply.\
-                                \n\nThis will change your Project CRS to a new custom CRS.")
         
         #self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Close).clicked.connect(self.onCancelClicked)
+        self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Cancel).setText("More Info")
         self.modeDropdown.currentIndexChanged.connect(self.onModeChanged)
     
     def onModeChanged(self):
         try:
             if not self: return
             index = self.modeDropdown.currentIndex()
-            if index == 1:
+            if index == 1: # custom crs
                 self.surveyPointLat.show()
                 self.surveyPointLon.show()
                 self.degreeSignX.show()
@@ -59,14 +55,11 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
                 self.label_offsets.hide()
                 self.offsetXDegreeSign.hide()
                 self.offsetYDegreeSign.hide()
-                self.description.setText("Use this option when you want to have minimal size and shape distortions\
-                                         \nwhen receiving the data from/sending to a non-GIS application.\
-                                         \n\nSpecify the origin Lat, Lon in geographic coordinates, \
-                                         \nrotation angle from True North in degrees and click Apply.\
+                self.description.setText("Use this option when you don't have to use a specific CRS.\
                                          \n\nThis will change your Project CRS to a new custom CRS.\
                                          \n\nHint: right-click on the canvas -> Copy Coordinate -> EPSG:4326. ")
 
-            elif index == 0:
+            elif index == 0: # offsets 
                 self.surveyPointLat.hide()
                 self.surveyPointLon.hide()
                 self.degreeSignX.hide()
@@ -92,14 +85,12 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
                     self.offsetYDegreeSign.hide()
                 
                 text = f"Use this option when your project requires a use of a specific CRS. \
-                        \n\nSpecify the origin Lat, Lon in the units of the current Project CRS, \
-                        \nrotation angle from True North in degrees and click Apply.\
                         \n\nThis will only affect Speckle data properties, not your Project CRS.\
                         \n\nHint: your current project CRS is '{self.dataStorage.currentCRS.authid()}' and using units '{self.dataStorage.currentOriginalUnits}'."
 
                 if units == 'degrees':
-                    text += "\nThis CRS is not recommended if data was sent or \
-                            \nneeds to be received in a non-GIS application."
+                    text += "\nThis CRS is not recommended if data was sent or needs to be \
+                            \nreceived in a non-GIS application."
                 
                 self.description.setText(text)
             

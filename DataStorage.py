@@ -13,6 +13,7 @@ class DataStorage:
 
     currentCRS = None
     currentUnits = "m"
+    currentOriginalUnits = ""
 
     custom_lat: Optional[float] = None
     custom_lon: Optional[float] = None

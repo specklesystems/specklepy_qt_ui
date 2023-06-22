@@ -27,59 +27,80 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
     dataStorage: DataStorage = None 
 
     #Events
-    handleCRSCreate = pyqtSignal(str,str)
+    #handleCRSCreate = pyqtSignal(str,str)
 
-    def __init__(self, parent=None, speckle_client: SpeckleClient = None):
-        super(CustomCRSDialog,self).__init__(parent,QtCore.Qt.WindowStaysOnTopHint)
-        self.speckle_client = speckle_client
+    def __init__(self, parent=None):
+        
+        super(CustomCRSDialog,self).__init__(parent, QtCore.Qt.WindowStaysOnTopHint)
         self.setupUi(self)
-        self.setWindowTitle("CustomCRS")
-
-        #self.saveSurveyPoint.setFlat(True)
-        #self.saveSurveyPoint.setStyleSheet("QPushButton {text-align: left;} QPushButton:hover { " + f"{COLOR}" + " }")
-        #self.saveOffsets.setFlat(True)
-        #self.saveOffsets.setStyleSheet("QPushButton {text-align: left;} QPushButton:hover { " + f"{COLOR}" + " }")
-
-        #self.label_offsets.setEnabled(False)
-        self.offsetX.setEnabled(False)
-        self.offsetY.setEnabled(False)
-        self.rotation.setEnabled(False)
-        #self.saveOffsets.setEnabled(False)
+        self.setWindowTitle("Set project center on Send/Receive")  
+        self.description.setText("Use this option when you want to have minimal size and shape distortions\
+                                \nwhen receiving the data from/sending to a non-GIS application.\
+                                \n\nSpecify the origin Lat, Lon in geographic coordinates, \
+                                \nrotation angle from True North in degrees and click Apply.\
+                                \n\nThis will change your Project CRS to a new custom CRS.")
         
-        
-        self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Close).clicked.connect(self.onCancelClicked)
+        #self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Close).clicked.connect(self.onCancelClicked)
         self.modeDropdown.currentIndexChanged.connect(self.onModeChanged)
-
-        self.populateModeDropdown()
-        self.populateSurveyPoint()
     
     def onModeChanged(self):
         try:
             if not self: return
             index = self.modeDropdown.currentIndex()
-            if index == 0:
-                #self.label_customCRS.setEnabled(True)
-                self.surveyPointLat.setEnabled(True)
-                self.surveyPointLon.setEnabled(True)
-                #self.saveSurveyPoint.setEnabled(True)
+            if index == 1:
+                self.surveyPointLat.show()
+                self.surveyPointLon.show()
+                self.degreeSignX.show()
+                self.degreeSignY.show()
+                self.label_survey.show()
                 
-                #self.label_offsets.setEnabled(False)
-                self.offsetX.setEnabled(False)
-                self.offsetY.setEnabled(False)
-                self.rotation.setEnabled(False)
-                #self.saveOffsets.setEnabled(False)
+                self.offsetX.hide()
+                self.offsetY.hide()
+                self.label_offsets.hide()
+                self.offsetXDegreeSign.hide()
+                self.offsetYDegreeSign.hide()
+                self.description.setText("Use this option when you want to have minimal size and shape distortions\
+                                         \nwhen receiving the data from/sending to a non-GIS application.\
+                                         \n\nSpecify the origin Lat, Lon in geographic coordinates, \
+                                         \nrotation angle from True North in degrees and click Apply.\
+                                         \n\nThis will change your Project CRS to a new custom CRS.\
+                                         \n\nHint: right-click on the canvas -> Copy Coordinate -> EPSG:4326. ")
 
-            elif index == 1:
-                #self.label_customCRS.setEnabled(False)
-                self.surveyPointLat.setEnabled(False)
-                self.surveyPointLon.setEnabled(False)
-                #self.saveSurveyPoint.setEnabled(False)
+            elif index == 0:
+                self.surveyPointLat.hide()
+                self.surveyPointLon.hide()
+                self.degreeSignX.hide()
+                self.degreeSignY.hide()
+                self.label_survey.hide()
                 
-                #self.label_offsets.setEnabled(True)
-                self.offsetX.setEnabled(True)
-                self.offsetY.setEnabled(True)
-                self.rotation.setEnabled(True)
-                #self.saveOffsets.setEnabled(True)
+                self.offsetX.show()
+                self.offsetY.show()
+                self.label_offsets.show()
+                #if self.dataStorage.currentOriginalUnits == 'degrees':
+                self.offsetXDegreeSign.show()
+                self.offsetYDegreeSign.show()
+                
+                units = self.dataStorage.currentOriginalUnits
+                if units == 'degrees':
+                    self.offsetXDegreeSign.setText("°")
+                    self.offsetYDegreeSign.setText("°")
+                elif units is not None:
+                    self.offsetXDegreeSign.setText(str(units).lower()[0])
+                    self.offsetYDegreeSign.setText(str(units).lower()[0])
+                else:
+                    self.offsetXDegreeSign.hide()
+                    self.offsetYDegreeSign.hide()
+                
+                self.description.setText(f"Use this option when your project requires a use of a specific CRS. \
+                                         \n\nSpecify the origin Lat, Lon in the units of the current Project CRS, \
+                                         \nrotation angle from True North in degrees and click Apply.\
+                                         \n\nThis will only affect Speckle data properties, not your Project CRS.\
+                                         \n\nHint: your current project CRS is '{self.dataStorage.currentCRS.authid()}' and using units '{self.dataStorage.currentOriginalUnits}' ")
+
+            
+            self.populateSurveyPoint()
+            self.populateOffsets()
+            self.populateRotation()
 
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3])
@@ -90,7 +111,7 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
         try:
             self.modeDropdown.clear()
             self.modeDropdown.addItems(
-                ["Create custom CRS", "Add offsets / rotation to the current Project CRS"]
+                ["Add offsets / rotation to the current Project CRS", "Create custom CRS"]
             )
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
@@ -105,6 +126,28 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
             if self.dataStorage.custom_lat is not None and self.dataStorage.custom_lon is not None:
                 self.surveyPointLat.setText(str(self.dataStorage.custom_lat))
                 self.surveyPointLon.setText(str(self.dataStorage.custom_lon))
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
+    
+    def populateRotation(self):
+        if not self:
+            return
+        try:
+            self.rotation.clear()
+            if self.dataStorage.crs_rotation is not None:
+                self.rotation.setText(str(self.dataStorage.crs_rotation))
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
+
+    def populateOffsets(self):
+        try:
+            self.offsetX.clear()
+            self.offsetY.clear()
+            if self.dataStorage.crs_offset_x is not None and self.dataStorage.crs_offset_y is not None:
+                self.offsetX.setText(str(self.dataStorage.crs_offset_x))
+                self.offsetY.setText(str(self.dataStorage.crs_offset_y))
             
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
@@ -114,22 +157,6 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
         return
         try:
             self.close()
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3])
-            return
-
-    def onCancelClicked(self):
-        try:
-            self.close()
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3])
-            return
-
-    def onAccountSelected(self, index):
-        try:
-            account = self.speckle_accounts[index]
-            self.speckle_client = SpeckleClient(account.serverInfo.url, account.serverInfo.url.startswith("https"))
-            self.speckle_client.authenticate_with_token(token=account.token)
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3])
             return

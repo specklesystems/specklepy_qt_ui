@@ -61,10 +61,10 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
 
         self.populateTransforms()
         self.populateLayersByTransform()
-        self.populateSavedTransforms()
-        self.populateSavedElevationLayer()
+        self.populateSavedTransforms(self.dataStorage)
+        self.populateSavedElevationLayer(self.dataStorage)
 
-    def populateSavedTransforms(self, dataStorage = None): #, savedTransforms: Union[List, None] = None, getLayer: Union[str, None] = None, getTransform: Union[str, None] = None):
+    def populateSavedTransforms(self, dataStorage): #, savedTransforms: Union[List, None] = None, getLayer: Union[str, None] = None, getTransform: Union[str, None] = None):
 
         if dataStorage is not None: 
             self.dataStorage = dataStorage # making sure lists are synced 
@@ -131,7 +131,7 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
                         listItem = str(self.layerDropdown.currentText()) + " (\'" +  str(self.attrDropdown.currentText()) + "\')  ->  " + str(self.transformDropdown.currentText())
             
                     self.dataStorage.savedTransforms.append(listItem)
-                    self.populateSavedTransforms()
+                    self.populateSavedTransforms(self.dataStorage)
                     
                     try:
                         metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Add transformation on Send", "Transformation": listItem.split("  ->  ")[1], "connector_version": str(self.dataStorage.plugin_version)})
@@ -150,7 +150,7 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
             if listItem in self.dataStorage.savedTransforms: 
                 self.dataStorage.savedTransforms.remove(listItem)
 
-            self.populateSavedTransforms()
+            self.populateSavedTransforms(self.dataStorage)
             set_transformations(self.dataStorage)
 
     def onOkClicked(self):
@@ -272,7 +272,7 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
             return
 
 
-    def populateSavedElevationLayer(self, dataStorage = None): #, savedTransforms: Union[List, None] = None, getLayer: Union[str, None] = None, getTransform: Union[str, None] = None):
+    def populateSavedElevationLayer(self, dataStorage): #, savedTransforms: Union[List, None] = None, getLayer: Union[str, None] = None, getTransform: Union[str, None] = None):
 
         try:
             if dataStorage is not None: 

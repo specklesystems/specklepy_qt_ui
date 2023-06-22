@@ -2,7 +2,6 @@
 
 import inspect
 import os
-from specklepy_qt_ui.widget_custom_crs import CustomCRSDialog
 
 from specklepy_qt_ui.widget_transforms import MappingSendDialog
 from specklepy_qt_ui.LogWidget import LogWidget
@@ -301,9 +300,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.reloadButton.clicked.connect(lambda: self.refreshClicked(plugin))
             self.closeButton.clicked.connect(lambda: self.closeClicked(plugin))
 
-            self.crsSettings.clicked.connect(self.customCRSDialogCreate)
-            #self.saveSurveyPoint.clicked.connect(plugin.set_survey_point)
-
             self.sendModeButton.clicked.connect(lambda: self.setSendMode(plugin))
             self.layerSendModeDropdown.currentIndexChanged.connect( lambda: self.layerSendModeChange(plugin) )
             self.receiveModeButton.clicked.connect(lambda: self.setReceiveMode(plugin))
@@ -561,57 +557,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.commitLabel.setEnabled(False)
             self.commitDropdown.setEnabled(False)
             self.show()
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
-    
-    def customCRSDialogCreate(self):
-        try:
-            self.custom_crs_modal = CustomCRSDialog(None)
-            self.custom_crs_modal.dataStorage = self.dataStorage
-            self.custom_crs_modal.dialog_button_box.button(QtWidgets.QDialogButtonBox.Close).clicked.connect(self.customCRSCreate)
-            #self.custom_crs_modal.handleBranchCreate.connect(self.handleBranchCreate)
-            self.custom_crs_modal.show()
-            #self.custom_crs_modal.populateSurveyPoint()
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
-    
-    
-    def customCRSApply(self):
-        index = self.custom_crs_modal.modeDropdown.currentIndex()
-        if index == 0: #create custom CRS
-            self.customCRSCreate()
-        if index == 1:
-            self.crsOffsetsApply()
-
-    def crsOffsetsApply(self):
-        try:
-            from speckle.utils.project_vars import set_crs_offsets_rotation
-
-            if float(self.custom_crs_modal.offsetX.text()) is not None and float(self.custom_crs_modal.offsetY.text()) is not None:
-                self.dataStorage.crs_offset_x = float(self.custom_crs_modal.offsetX.text())
-                self.dataStorage.crs_offset_y = float(self.custom_crs_modal.offsetY.text())
-            if float(self.custom_crs_modal.rotation.text()) is not None:
-                self.dataStorage.crs_rotation = float(self.custom_crs_modal.rotation.text())
-            set_crs_offsets_rotation(self.dataStorage, self)
-            self.custom_crs_modal.close()
-        except: pass 
-
-    def customCRSCreate(self):
-        try: 
-            vals =[ str(self.custom_crs_modal.surveyPointLat.text()), str(self.custom_crs_modal.surveyPointLon.text()) ]
-            custom_lat, custom_lon = [float(i.replace(" ","")) for i in vals]
-            if custom_lat>180 or custom_lat<-180 or custom_lon >180 or custom_lon<-180:
-                logToUser("LAT LON values must be within (-180, 180). You can right-click on the canvas location to copy coordinates in WGS 84", level = 1, plugin=self)
-                return True 
-
-            from speckle.utils.project_vars import set_survey_point, setProjectReferenceSystem
-            self.dataStorage.custom_lat = custom_lat
-            self.dataStorage.custom_lon = custom_lon
-            set_survey_point(self.dataStorage, self)
-            setProjectReferenceSystem(self.dataStorage, self)
-
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return

@@ -388,6 +388,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             #self.layerSendModeChange(plugin, 1)
             self.commitLabel.setEnabled(True)
             self.commitDropdown.setEnabled(True)
+            
             self.layersWidget.setEnabled(False)
             self.messageLabel.setEnabled(False)
             self.messageInput.setEnabled(False)
@@ -557,6 +558,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.commitLabel.setEnabled(False)
             self.commitDropdown.setEnabled(False)
             self.show()
+            self.setSendMode(plugin)
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return

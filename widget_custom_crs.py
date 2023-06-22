@@ -91,12 +91,17 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
                     self.offsetXDegreeSign.hide()
                     self.offsetYDegreeSign.hide()
                 
-                self.description.setText(f"Use this option when your project requires a use of a specific CRS. \
-                                         \n\nSpecify the origin Lat, Lon in the units of the current Project CRS, \
-                                         \nrotation angle from True North in degrees and click Apply.\
-                                         \n\nThis will only affect Speckle data properties, not your Project CRS.\
-                                         \n\nHint: your current project CRS is '{self.dataStorage.currentCRS.authid()}' and using units '{self.dataStorage.currentOriginalUnits}' ")
+                text = f"Use this option when your project requires a use of a specific CRS. \
+                        \n\nSpecify the origin Lat, Lon in the units of the current Project CRS, \
+                        \nrotation angle from True North in degrees and click Apply.\
+                        \n\nThis will only affect Speckle data properties, not your Project CRS.\
+                        \n\nHint: your current project CRS is '{self.dataStorage.currentCRS.authid()}' and using units '{self.dataStorage.currentOriginalUnits}'."
 
+                if units == 'degrees':
+                    text += "\nThis CRS is not recommended if data was sent or \
+                            \nneeds to be received in a non-GIS application."
+                
+                self.description.setText(text)
             
             self.populateSurveyPoint()
             self.populateOffsets()

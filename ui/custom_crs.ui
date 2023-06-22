@@ -28,12 +28,12 @@
           <item row = "0">
           <widget class="QLabel" name="generalDescription">
             <property name="text">
-            <string>Modifying project center is useful when you need: 
- - to Send data (so you can receive correctly in non-GIS application)
- - or to Receive data (if data was sent from non-GIS application).
+            <string>Modifying project center is useful when you need to: 
+ - Send data (so you can receive correctly in a non-GIS application)
+ - Receive data (if data was sent from non-GIS application).
 
 You can choose to create a custom Coordinate Reference System, 
-based on Traverse Mercator, or use existing one and modify 
+based on Traverse Mercator, or use the existing one and modify 
 it's Speckle properties by adding X- and Y- offsets. 
 
 Rotaton angle in both cases will only affect Speckle object properties
@@ -85,15 +85,6 @@ during Send/Receive operations and will not be visible in QGIS project.</string>
               </spacer>
             </item>
 
-
-            <item row="6" >
-              <widget class="QLabel" name="description">
-                <property name="text">
-                <string> </string>
-                </property>
-              </widget>
-            </item>
-            
             <item row="8">
               <spacer name="horizontalSpacer">
                 <property name="orientation">
@@ -221,6 +212,15 @@ during Send/Receive operations and will not be visible in QGIS project.</string>
               </layout>
             </item>
 
+
+            <item row="20" >
+              <widget class="QLabel" name="description">
+                <property name="text">
+                <string> </string>
+                </property>
+              </widget>
+            </item>
+            
         </layout>
         </item>
 

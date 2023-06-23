@@ -129,7 +129,7 @@
                                 </widget>
                             </item >
                             <item >
-                                <widget class="QPushButton" name="dialog_button_box">
+                                <widget class="QPushButton" name="dialog_button">
                                     <property name="text">
                                     <string>Ok</string>
                                     </property>

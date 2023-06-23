@@ -9,7 +9,7 @@ import webbrowser
 from specklepy.logging import metrics
 from specklepy.api.credentials import Account
 
-from specklepy_qt_ui.global_resources import (
+from specklepy_qt_ui.qt_ui.global_resources import (
     BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY
 )
 

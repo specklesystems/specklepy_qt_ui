@@ -50,7 +50,7 @@ except:
 
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
-from specklepy_qt_ui.global_resources import (
+from specklepy_qt_ui.qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,

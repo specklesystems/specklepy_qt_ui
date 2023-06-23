@@ -3,11 +3,11 @@
 import inspect
 import os
 
-from specklepy_qt_ui.widget_transforms import MappingSendDialog
-from specklepy_qt_ui.LogWidget import LogWidget
-from specklepy_qt_ui.logger import logToUser
-from specklepy_qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.global_resources import (
+from specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
+from specklepy_qt_ui.qt_ui.LogWidget import LogWidget
+from specklepy_qt_ui.qt_ui.logger import logToUser
+from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+from specklepy_qt_ui.qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
@@ -65,7 +65,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.runAllSetup()
 
+    def runAllSetup(self):
         self.streamBranchDropdown.setMaxCount(100)
         self.commitDropdown.setMaxCount(100)
 
@@ -77,9 +79,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.closeButton.setFlat(True)
 
         # https://stackoverflow.com/questions/67585501/pyqt-how-to-use-hover-in-button-stylesheet
-        #color = f"color: rgb{str(SPECKLE_COLOR)};"
-        #backgr_color = f"background-color: rgb{str(SPECKLE_COLOR)};"
-        #backgr_color_light = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
         backgr_image_del = f"border-image: url({ICON_DELETE_BLUE});"
         self.streams_add_button.setIcon(QIcon(ICON_SEARCH))
         self.streams_add_button.setMaximumWidth(25)
@@ -108,24 +107,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
         # insert checkbox 
         l = self.verticalLayout
-        #l_item = None
-        
-        #for i in reversed(range(self.verticalLayout.count())): 
-        #   l_item = self.verticalLayout.itemAt(i).widget()
-
-        # add row with "experimental" checkbox 
-        r'''
-        box = QWidget()
-        box.layout = QHBoxLayout(box)
-        btn = QtWidgets.QCheckBox("Send/receive in the background (experimental!)")
-        btn.setStyleSheet("QPushButton {color: black; border: 0px;padding: 0px;height: 40px;text-align: left;}")
-        box.layout.addWidget(btn)
-        box.layout.setContentsMargins(65, 0, 0, 0)
-        self.formLayout.insertRow(10,box)
-        self.experimental = btn
-        self.experimental.setChecked(True)
-        '''
-
 
     def runSetup(self, plugin):
         
@@ -145,19 +126,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.msgLog.active_account = plugin.dataStorage.active_account
         self.msgLog.speckle_version = plugin.version
 
-        # add Transforms button
-        r'''
-        box = QWidget()
-        box.layout = QHBoxLayout(box)
-        btn = QtWidgets.QPushButton("Apply transformations on Send")
-        btn.setFlat(True)
-        btn.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
-        box.layout.addWidget(btn)
-        box.layout.setContentsMargins(65, 0, 0, 0)
-        self.formLayout.insertRow(9,box)
-        self.setMapping = btn
-        '''
-        
         self.setMapping.setFlat(True)
         self.setMapping.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
         

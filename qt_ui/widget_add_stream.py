@@ -1,8 +1,9 @@
 import inspect
 import os
 from typing import List, Union
+from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 
-from specklepy_qt_ui.logger import logToUser
+from specklepy_qt_ui.qt_ui.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -12,6 +13,7 @@ from specklepy.api.client import SpeckleClient
 from specklepy.logging.exceptions import SpeckleException
 from specklepy.api.credentials import get_local_accounts #, StreamWrapper
 from specklepy.api.wrapper import StreamWrapper
+from specklepy.logging import metrics
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -28,6 +30,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
 
     stream_results: List[Stream] = []
     speckle_client: Union[SpeckleClient, None] = None
+    dataStorage: DataStorage = None 
 
     #Events
     handleStreamAdd = pyqtSignal(StreamWrapper)
@@ -66,14 +69,21 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                 stream = sw.get_client().stream.get(sw.stream_id)
                 if isinstance(stream, Stream): results = [stream]
                 else: results = []
+                
+                try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Stream Search By URL", "connector_version": str(self.dataStorage.plugin_version)})
+                except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
             elif self.speckle_client is not None: 
                 results = self.speckle_client.stream.search(query)
+                try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Stream Search By Name", "connector_version": str(self.dataStorage.plugin_version)})
+                except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
+            
             elif self.speckle_client is None: 
                 logToUser(f"Account cannot be authenticated: {self.accounts_dropdown.currentText()}", level = 1, func = inspect.stack()[0][3]) 
             
             self.stream_results = results
             self.populateResultsList(sw)
+
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3])
             return
@@ -113,6 +123,10 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                     item = self.search_results_list.item(index)
                     url = item.text().split(" | ")[1] + "/streams/" + item.text().split(", ")[1].split(" | ")[0]
                     sw = StreamWrapper(url) 
+                    
+                    try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Stream Add From Search", "connector_version": str(self.dataStorage.plugin_version)})
+                    except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
+            
                     #acc = sw.get_account() #get_local_accounts()[self.accounts_dropdown.currentIndex()]
                     self.handleStreamAdd.emit(sw) #StreamWrapper(f"{acc.serverInfo.url}/streams/{stream.id}?u={acc.userInfo.id}"))
                     self.close()
@@ -135,6 +149,10 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             account = self.speckle_accounts[index]
             self.speckle_client = SpeckleClient(account.serverInfo.url, account.serverInfo.url.startswith("https"))
             self.speckle_client.authenticate_with_token(token=account.token)
+            
+            try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Account Select", "connector_version": str(self.dataStorage.plugin_version)})
+            except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
+            
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3])
             return

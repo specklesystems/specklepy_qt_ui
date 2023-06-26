@@ -137,8 +137,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.dataStorage.project = plugin.qgis_project
     
     def createMappingDialog(self):
-        #root = self.dataStorage.project.layerTreeRoot()
-        #self.dataStorage.all_layers = getAllLayers(root)
 
         if self.mappingSendDialog is None:
             self.mappingSendDialog = MappingSendDialog(None)
@@ -154,7 +152,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def addLabel(self, plugin): 
         try:
             exitIcon = QPixmap(ICON_LOGO)
-            #scaledExitIcon = exitIcon.scaled(QtCore.QSize(100, 31))
             exitActIcon = QIcon(exitIcon)
 
             # create a label 
@@ -204,29 +201,22 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def resizeEvent(self, event):
         try:
-            #print("resize")
             QtWidgets.QDockWidget.resizeEvent(self, event)
             if self.msgLog.size().height() != 0: # visible
                 self.msgLog.setGeometry(0, 0, self.msgLog.parentWidget.frameSize().width(), self.msgLog.parentWidget.frameSize().height()) #.resize(self.frameSize().width(), self.frameSize().height())
         except Exception as e:
-            #logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
 
     def clearDropdown(self):
         try:
-            #self.streamIdField.clear()
             self.streamBranchDropdown.clear()
             self.commitDropdown.clear()
-            #self.layerSendModeDropdown.clear()
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
 
     def reloadDialogUI(self, plugin):
         try:
-
-            #logToUser("long errror something something msg1", level=2, plugin= plugin)
-
             self.clearDropdown()
             self.populateUI(plugin) 
             self.enableElements(plugin)
@@ -317,13 +307,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.receiveModeButton.setFlat(True)
             self.receiveModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px; } QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" +  " };")
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLACK))
-            #self.receiveModeButton.setFlat(True)
             self.runButton.setProperty("text", " SEND")
             self.runButton.setIcon(QIcon(ICON_SEND))
 
             # enable sections only if in "saved streams" mode 
             if self.layerSendModeDropdown.currentIndex() == 1: self.layersWidget.setEnabled(True)
-            #if self.layerSendModeDropdown.currentIndex() == 1: 
             self.saveLayerSelection.setEnabled(True)
             self.commitLabel.setEnabled(False)
             self.commitDropdown.setEnabled(False)
@@ -350,10 +338,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLUE))
             self.sendModeButton.setFlat(True)
             self.receiveModeButton.setFlat(False)
-            #self.sendModeButton.setFlat(True)
             self.runButton.setProperty("text", " RECEIVE")
             self.runButton.setIcon(QIcon(ICON_RECEIVE))
-            #self.layerSendModeChange(plugin, 1)
             self.commitLabel.setEnabled(True)
             self.commitDropdown.setEnabled(True)
             
@@ -371,27 +357,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             return
 
     def completeStreamSection(self, plugin):
-        try:
-            self.streams_remove_button.clicked.connect( lambda: self.onStreamRemoveButtonClicked(plugin) )
-            self.streamList.currentIndexChanged.connect( lambda: self.onActiveStreamChanged(plugin) )
-            self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.populateActiveCommitDropdown(plugin) )
-            return
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
+        return
 
     def populateUI(self, plugin):
-        try:
-
-            self.populateLayerSendModeDropdown()
-            self.populateProjectStreams(plugin)
-
-            self.runBtnStatusChanged(plugin)
-            self.runButton.setEnabled(False) 
-            
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
+        return
     
     def runBtnStatusChanged(self, plugin):
         try:
@@ -419,14 +388,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def layerSendModeChange(self, plugin, runMode = None):
         try:
             if self.layerSendModeDropdown.currentIndex() == 0 or runMode == 1: # by manual selection OR receive mode
-                #self.current_layers = []
-                #self.dataStorage.current_layers = []
                 self.layersWidget.setEnabled(False)
-                #self.saveLayerSelection.setEnabled(False)
                 
             elif self.layerSendModeDropdown.currentIndex() == 1 and (runMode == 0 or runMode is None): # by saved AND when Send mode
                 self.layersWidget.setEnabled(True)
-                #self.saveLayerSelection.setEnabled(True)
             
             branchStr = str(self.streamBranchDropdown.currentText())
             if self.layerSendModeDropdown.currentIndex() == 0:
@@ -528,29 +493,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.show()
             self.setSendMode(plugin)
         except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            #logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
     
     def populateProjectStreams(self, plugin):
-        try:
-            from speckle.utils.project_vars import set_project_streams
-            if not self: return
-            self.streamList.clear()
-            for stream in plugin.current_streams: 
-                self.streamList.addItems(
-                [f"Stream not accessible - {stream[0].stream_id}" if stream[1] is None or isinstance(stream[1], SpeckleException) else f"{stream[1].name}, {stream[1].id} | {stream[0].stream_url.split('/streams')[0]}"] 
-            )
-            if len(plugin.current_streams)==0: self.streamList.addItems([""])
-            self.streamList.addItems(["Create New Stream"])
-            set_project_streams(plugin)
-            index = self.streamList.currentIndex()
-            if index == -1: self.streams_remove_button.setEnabled(False)
-            else: self.streams_remove_button.setEnabled(True)
-
-            if len(plugin.current_streams)>0: plugin.active_stream = plugin.current_streams[0]
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
+        return 
 
     def onActiveStreamChanged(self, plugin):
         try:
@@ -632,19 +579,5 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             return
 
     def onStreamRemoveButtonClicked(self, plugin):
-        try:
-            from speckle.utils.project_vars import set_project_streams
-            if not self: return
-            index = self.streamList.currentIndex()
-            if len(plugin.current_streams) > 0: plugin.current_streams.pop(index)
-            plugin.active_stream = None
-            self.streamBranchDropdown.clear()
-            self.commitDropdown.clear()
-            #self.streamIdField.setText("")
-
-            set_project_streams(plugin)
-            self.populateProjectStreams(plugin)
-        except Exception as e:
-            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            return
+        return 
 

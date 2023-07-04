@@ -7,7 +7,10 @@ from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
 def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False):
       print("Log to user")
       msg = str(msg)
-      print(msg + " " + url + "::" + str(func))
+      if func is not None and func != "None": 
+            print(msg + " " + url + "::" + str(func))
+      else: 
+            print(msg + " " + url )
 
       dockwidget = plugin
       try: 

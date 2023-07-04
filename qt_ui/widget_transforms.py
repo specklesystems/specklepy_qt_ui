@@ -40,7 +40,7 @@ class MappingSendDialog(QtWidgets.QWidget, FORM_CLASS):
         self.transformDropdown.currentIndexChanged.connect(self.populateLayersByTransform)
         self.transformDropdown.currentIndexChanged.connect(self.populateAttributesByLayer)
         self.layerDropdown.currentIndexChanged.connect(self.populateAttributesByLayer)
-        self.dialog_button.clicked.connect(self.saveElevationLayer)
+        #self.dialog_button.clicked.connect(self.saveElevationLayer)
         self.dialog_button.clicked.connect(self.onOkClicked)
         self.more_info.clicked.connect(self.onMoreInfo)
         return

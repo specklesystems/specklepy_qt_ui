@@ -1,6 +1,10 @@
 
-from typing import List, Optional, Tuple, Union, Any 
+import inspect
+from typing import List, Optional, Tuple, Union, Any
+import webbrowser
 
+from speckle.utils.panel_logging import logToUser 
+from specklepy.core.api.credentials import get_local_accounts
 
 class DataStorage:
     
@@ -48,5 +52,22 @@ class DataStorage:
         self.accounts = [] 
         self.elevationLayer = None 
 
-
+    def check_for_accounts(self):
+        try:
+            def go_to_manager():
+                webbrowser.open("https://speckle-releases.netlify.app/")
+            accounts = get_local_accounts()
+            self.accounts = accounts
+            if len(accounts) == 0:
+                logToUser("No accounts were found. Please remember to install the Speckle Manager and setup at least one account", level = 1, url="https://speckle-releases.netlify.app/", func = inspect.stack()[0][3], plugin = self.dockwidget) #, action_text="Download Manager", callback=go_to_manager)
+                return False
+            for acc in accounts:
+                if acc.isDefault: 
+                    self.default_account = acc 
+                    self.active_account = acc 
+                    break 
+            return True
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3])
+            return
         

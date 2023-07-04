@@ -21,7 +21,7 @@ from specklepy.logging import metrics
 
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -195,7 +195,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             connect_box.addWidget(text_label) #, alignment=Qt.AlignCenter) 
             connect_box.addWidget(version_label) 
             connect_box.setContentsMargins(0, 0, 0, 0)
+            self.setWindowTitle("SpeckleQGIS")
             self.setTitleBarWidget(widget)
+            self.labelWidget = text_label
+            self.labelWidget.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+            self.labelWidget.clicked.connect(self.onClickLogo)
         except Exception as e:
             logToUser(e)
 
@@ -270,6 +274,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
+
+    def onClickLogo(self):
+        import webbrowser
+        url = "https://speckle.systems/"
+        webbrowser.open(url, new=0, autoraise=True)
 
     def refreshClicked(self, plugin):
         try:
@@ -412,7 +421,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             self.dataStorage.current_layers.clear() 
             layers = self.dataStorage.saved_layers
-            print(layers)
             if not layers: return 
             
             for i, layer in enumerate(layers):
@@ -459,9 +467,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                     from qgis.core import QgsIconUtils 
                     icon = QgsIconUtils().iconForLayer(layer)
                     listItem.setIcon(icon)
-                    print(icon)
+                    #print(icon)
             except Exception as e:
-                print("e")
+                print(e)
                 icons = {
                     "generic": ICON_GENERIC,
                     "polygon": ICON_POLYGON,
@@ -493,7 +501,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.show()
             self.setSendMode(plugin)
         except Exception as e:
-            #logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
     
     def populateProjectStreams(self, plugin):

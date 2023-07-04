@@ -421,7 +421,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             self.dataStorage.current_layers.clear() 
             layers = self.dataStorage.saved_layers
-            print(layers)
             if not layers: return 
             
             for i, layer in enumerate(layers):
@@ -468,9 +467,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                     from qgis.core import QgsIconUtils 
                     icon = QgsIconUtils().iconForLayer(layer)
                     listItem.setIcon(icon)
-                    print(icon)
+                    #print(icon)
             except Exception as e:
-                print("e")
+                print(e)
                 icons = {
                     "generic": ICON_GENERIC,
                     "polygon": ICON_POLYGON,

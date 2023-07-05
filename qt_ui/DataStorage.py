@@ -26,6 +26,10 @@ class DataStorage:
     crs_offset_y: Optional[float] = None 
     crs_rotation: Optional[float] = None 
 
+    current_layer_crs_offset_x: Optional[float] = None 
+    current_layer_crs_offset_y: Optional[float] = None 
+    current_layer_crs_rotation: Optional[float] = None 
+
     current_layers: Union[List[Tuple[Any, str, str]], None] = None 
     saved_layers: Union[List, None] = None 
     sending_layers: None

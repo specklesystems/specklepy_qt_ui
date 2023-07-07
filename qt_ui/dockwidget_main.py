@@ -578,9 +578,12 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                         break
             
             self.commitDropdown.addItem("Latest commit from this branch")
-            self.commitDropdown.addItems(
-                [f"{commit.id}"+ " | " + f"{str(commit.sourceApplication)}" + " | " + f"{commit.message}" for commit in branch.commits.items]
-            )
+
+            commits = []
+            for commit in branch.commits.items:
+                sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
+                commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
+            self.commitDropdown.addItems(commits)
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             print(str(e) + "::" + str(inspect.stack()[0][3]))

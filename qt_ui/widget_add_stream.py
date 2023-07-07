@@ -170,13 +170,14 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
 
     def onAccountSelected(self, index = 0):
         try:
+            
+            try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Account Select", "connector_version": str(self.dataStorage.plugin_version)})
+            except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
+            
             account = self.speckle_accounts[index]
             self.speckle_client = SpeckleClient(account.serverInfo.url, account.serverInfo.url.startswith("https"))
             self.speckle_client.authenticate_with_token(token=account.token)
             self.getAllStreams()
-            
-            try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Account Select", "connector_version": str(self.dataStorage.plugin_version)})
-            except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3])

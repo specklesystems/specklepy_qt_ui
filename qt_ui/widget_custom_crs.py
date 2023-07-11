@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget 
 from PyQt5.QtCore import pyqtSignal
 
-from specklepy.api.client import SpeckleClient
+from specklepy.core.api.client import SpeckleClient
 
 from specklepy_qt_ui.qt_ui.global_resources import COLOR
 

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton
 
 import webbrowser
 from specklepy.logging import metrics
-from specklepy.api.credentials import Account
+from specklepy.core.api.credentials import Account
 
 from specklepy_qt_ui.qt_ui.global_resources import (
     BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY
@@ -30,7 +30,7 @@ class LogWidget(QWidget):
         super(LogWidget, self).__init__(parent)
         self.parentWidget = parent
         print(self.parentWidget)
-        self.max_msg = 10
+        self.max_msg = 8
         
         # create a temporary floating button 
         width = 0 #parent.frameSize().width()

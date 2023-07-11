@@ -134,7 +134,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     
     def addDataStorage(self, plugin):
         self.dataStorage = plugin.dataStorage
-        self.dataStorage.project = plugin.qgis_project
+        try: 
+            self.dataStorage.project = plugin.project
+        except:
+            self.dataStorage.project = plugin.qgis_project
     
     def createMappingDialog(self):
 

@@ -8,11 +8,11 @@ from specklepy_qt_ui.qt_ui.logger import logToUser
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
 
-from specklepy.api.models import Stream
-from specklepy.api.client import SpeckleClient
+from specklepy.core.api.models import Stream
+from specklepy.core.api.client import SpeckleClient
 from specklepy.logging.exceptions import SpeckleException
-from specklepy.api.credentials import get_local_accounts #, StreamWrapper
-from specklepy.api.wrapper import StreamWrapper
+from specklepy.core.api.credentials import get_local_accounts #, StreamWrapper
+from specklepy.core.api.wrapper import StreamWrapper
 from specklepy.logging import metrics
 
 from specklepy_qt_ui.qt_ui.utils import constructCommitURLfromServerCommit

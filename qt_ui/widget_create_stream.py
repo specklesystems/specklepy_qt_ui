@@ -5,8 +5,8 @@ from specklepy_qt_ui.qt_ui.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
-from specklepy.api.client import SpeckleClient
-from specklepy.api.credentials import Account, get_local_accounts #, StreamWrapper
+from specklepy.core.api.client import SpeckleClient
+from specklepy.core.api.credentials import Account, get_local_accounts #, StreamWrapper
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(

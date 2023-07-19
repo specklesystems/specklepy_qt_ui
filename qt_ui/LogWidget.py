@@ -49,8 +49,8 @@ class LogWidget(QWidget):
         for i in range(self.max_msg):
             button = QPushButton(f"👌 Error") # to '{streamName}' Sent , v
             button.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
-            button.clicked.connect(lambda: self.openLink())
-            button.clicked.connect(lambda: self.hide())
+            button.clicked.connect(lambda: self.btnClicked())
+            #button.clicked.connect(lambda: self.hide())
             self.btns.append(button)
 
         self.hide() 
@@ -101,22 +101,30 @@ class LogWidget(QWidget):
         self.msgs.append(text)
         self.used_btns.append(1)
 
-    def openLink(self, url = ""):
+    def openURL(self, url):
+        webbrowser.open(url, new=0, autoraise=True)
+        try:
+            metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
+        except:
+            pass   
+
+    def btnClicked(self, url = ""):
         try:
             btn = self.sender()
             url = btn.accessibleName()
-            if url == "": return
 
-            webbrowser.open(url, new=0, autoraise=True)
-            
-            try:
-                metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
-            except:
-                pass   
-               
-            self.hide()
+            if url == "" or not isinstance(url, str): 
+                return
+            elif isinstance(url, str): 
+                if url.startswith("http"): 
+                    self.openURL(url) 
+                elif url.startswith("cancel"):
+                    self.parentWidget.cancelOperations()
+
         except Exception as e: 
+            print(e)
             pass #logger.logToUser(str(e), level=2, func = inspect.stack()[0][3])
+        self.hide()
 
     def getNextBtn(self):
         index = len(self.used_btns) # get the next "free" button 

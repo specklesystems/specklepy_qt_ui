@@ -604,3 +604,5 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def onStreamRemoveButtonClicked(self, plugin):
         return 
 
+    def cancelOperations(self):
+        return 

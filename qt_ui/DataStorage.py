@@ -39,6 +39,8 @@ class DataStorage:
     savedTransforms: Union[List, None] = None
     transformsCatalog: Union[List, None] = None
 
+    matrix = None # if receiving instance with transform 
+
     def __init__(self):
         print("hello")
         #self.streamsToFollow.append(("https://speckle.xyz/streams/17b0b76d13/branches/random_tests", "", "09a0f3e41a"))

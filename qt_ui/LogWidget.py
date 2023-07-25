@@ -105,8 +105,8 @@ class LogWidget(QWidget):
         webbrowser.open(url, new=0, autoraise=True)
         try:
             metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
-        except:
-            pass   
+        except Exception as e:
+            print(e)   
 
     def btnClicked(self, url = ""):
         try:
@@ -138,7 +138,33 @@ class LogWidget(QWidget):
 
         btn = self.btns[index]
         return btn, index 
+    
+    def getBtnByKeyword(self, keyword: str):
+        try:
+            new_btn = None
+            for btn in self.btns:
+                url = btn.accessibleName() 
+                if keyword in url: 
+                    new_btn = btn 
+                    break
+            return new_btn
+        except Exception as e:
+            print(e)
+    
+    def removeBtnUrl(self, keyword: str):
+        try:
+            btn = self.getBtnByKeyword(keyword)
+            if btn is not None:
+                #if "\n" in btn.text():
+                #    texts = btn.text().split("\n")
+                #    new_text = "\n".join(texts[:-1])
+                #    btn.setText(new_text)
 
+                btn.setAccessibleName("")
+                btn.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+        except Exception as e:
+            print(e)
+        
     def resizeToText(self, btn):
         try:
             text = btn.text()

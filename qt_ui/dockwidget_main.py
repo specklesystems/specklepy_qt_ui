@@ -119,6 +119,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         
         # add widgets that will only show on event trigger 
         logWidget = LogWidget(parent=self)
+        logWidget.dataStorage = plugin.dataStorage
         self.layout().addWidget(logWidget)
         self.msgLog = logWidget 
         self.msgLog.dockwidget = self 

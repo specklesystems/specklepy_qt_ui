@@ -15,6 +15,7 @@ from specklepy_qt_ui.qt_ui.global_resources import (
 
 class LogWidget(QWidget):
     
+    dataStorage = None
     msgs: List[str] = []
     used_btns: List[int] = []
     btns: List[QPushButton]
@@ -110,7 +111,7 @@ class LogWidget(QWidget):
             webbrowser.open(url, new=0, autoraise=True)
             
             try:
-                metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
+                metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web - Sent", "connector_version": str(self.speckle_version)})
             except:
                 pass   
                

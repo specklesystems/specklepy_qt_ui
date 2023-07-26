@@ -419,7 +419,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateSavedLayerDropdown(self, plugin):
         
         try:
-            print(self.dataStorage.saved_layers)
+            #print(self.dataStorage.saved_layers)
             if not self: return
             self.layersWidget.clear()
 
@@ -590,7 +590,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.commitDropdown.addItems(commits)
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            print(str(e) + "::" + str(inspect.stack()[0][3]))
+            #print(str(e) + "::" + str(inspect.stack()[0][3]))
             return
 
     def onStreamRemoveButtonClicked(self, plugin):

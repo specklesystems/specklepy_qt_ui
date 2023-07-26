@@ -30,7 +30,7 @@ class LogWidget(QWidget):
     def __init__(self, parent=None):
         super(LogWidget, self).__init__(parent)
         self.parentWidget = parent
-        print(self.parentWidget)
+        #print(self.parentWidget)
         self.max_msg = 8
         
         # create a temporary floating button 
@@ -58,7 +58,7 @@ class LogWidget(QWidget):
 
     # overriding the mouseReleaseEvent method
     def mouseReleaseEvent(self, event):
-        print("Mouse Release Event")
+        #print("Mouse Release Event")
         self.hide() 
         #self.parentWidget.hideError()
 
@@ -75,7 +75,7 @@ class LogWidget(QWidget):
         self.msgs.clear()
 
     def addButton(self, text: str = "something went wrong", level: int = 2, url = "", blue = False):
-        print("Add button")
+        #print("Add button")
 
         self.setGeometry(0, 0, self.parentWidget.frameSize().width(), self.parentWidget.frameSize().height())
         

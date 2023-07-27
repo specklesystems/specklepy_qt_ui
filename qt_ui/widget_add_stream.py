@@ -110,6 +110,15 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         if name == branch_name:
                             branch = br
                             break 
+                elif "/commits/" in query:
+                    commit_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
+                    for br in stream.branches.items:
+                        for com in br.commits.items:
+                            if com.id == commit_id:
+                                branch = br
+                                commit = com 
+                                break
+
                 #if "/commits/" in query:
                 #    branch_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
                 #    for com in stream.

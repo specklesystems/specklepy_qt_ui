@@ -561,14 +561,14 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 return
             elif plugin.active_stream is None or plugin.active_stream[1] is None or plugin.active_stream[1].branches is None:
                 return
-            print(plugin.active_stream[1])
-            print(plugin.active_branch)
+            #print(plugin.active_stream[1])
+            #print(plugin.active_branch)
             self.streamBranchDropdown.addItems(
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
             self.streamBranchDropdown.addItems(["Create New Branch"])
 
-            # set index to current 
+            # set index to current (if added from URL) 
             if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:
                 self.streamBranchDropdown.setCurrentText(plugin.active_branch.name)
 
@@ -604,6 +604,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
                 commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
             self.commitDropdown.addItems(commits)
+
+            # set index to current (if added from URL) 
+            if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
+                self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
+
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             print(str(e) + "::" + str(inspect.stack()[0][3]))

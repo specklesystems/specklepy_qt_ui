@@ -1,14 +1,15 @@
 import inspect
 import os
 from typing import List, Union
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+import urllib.parse
 
+from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 from specklepy_qt_ui.qt_ui.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
 
-from specklepy.core.api.models import Stream
+from specklepy.core.api.models import Stream, Branch, Commit
 from specklepy.core.api.client import SpeckleClient
 from specklepy.logging.exceptions import SpeckleException
 from specklepy.core.api.credentials import get_local_accounts #, StreamWrapper
@@ -31,11 +32,13 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
     accounts_dropdown: QtWidgets.QComboBox
 
     stream_results: List[Stream] = []
+    branch_result: Branch = None
+    commit_result: Commit = None
     speckle_client: Union[SpeckleClient, None] = None
     dataStorage: DataStorage = None 
 
     #Events
-    handleStreamAdd = pyqtSignal(StreamWrapper)
+    handleStreamAdd = pyqtSignal(object)
 
     def __init__(self, parent=None, speckle_client: SpeckleClient = None):
         super(AddStreamModalDialog,self).__init__(parent,QtCore.Qt.WindowStaysOnTopHint)
@@ -86,25 +89,48 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
         try:
             query = self.search_text_field.text()
             sw = None 
-            results = []
+            streams = []
+            branch = None
+            commit = None
+            print("_____ onSearchClicked___")
             if "http" in query and len(query.split("/")) >= 3: # URL
                 sw = StreamWrapper(query)
-                stream = sw.get_client().stream.get(sw.stream_id)
-                if isinstance(stream, Stream): results = [stream]
-                else: results = []
+                stream = sw.get_client().stream.get(id = sw.stream_id, branch_limit = 100, commit_limit = 100)
+                if isinstance(stream, Stream): 
+                    streams = [stream]
+
+                if "/branches/" in query:
+                    branch_name = query.split("/branches/")[len(query.split("/branches/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
+                    print(branch_name)
+                    print(stream)
+                    print(len(stream.branches.items))
+                    for br in stream.branches.items:
+                        name = urllib.parse.quote(br.name)
+                        print(name)
+                        if name == branch_name:
+                            branch = br
+                            break 
+                #if "/commits/" in query:
+                #    branch_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
+                #    for com in stream.
+                #        if br.id == branch_id:
+                #            branch = br
+                #            break 
                 
                 try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Stream Search By URL", "connector_version": str(self.dataStorage.plugin_version)})
                 except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
             elif self.speckle_client is not None: 
-                results = self.speckle_client.stream.search(query)
+                streams = self.speckle_client.stream.search(query)
                 try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Stream Search By Name", "connector_version": str(self.dataStorage.plugin_version)})
                 except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
             elif self.speckle_client is None: 
                 logToUser(f"Account cannot be authenticated: {self.accounts_dropdown.currentText()}", level = 1, func = inspect.stack()[0][3]) 
             
-            self.stream_results = results
+            self.stream_results = streams
+            self.branch_result = branch
+            self.commit_result = commit
             self.populateResultsList(sw)
 
         except Exception as e:
@@ -152,7 +178,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                     except Exception as e: logToUser(e, level = 2, func = inspect.stack()[0][3] )
             
                     #acc = sw.get_account() #get_local_accounts()[self.accounts_dropdown.currentIndex()]
-                    self.handleStreamAdd.emit(sw) #StreamWrapper(f"{acc.serverInfo.url}/streams/{stream.id}?u={acc.userInfo.id}"))
+                    self.handleStreamAdd.emit((sw, self.branch_result, self.commit_result)) #StreamWrapper(f"{acc.serverInfo.url}/streams/{stream.id}?u={acc.userInfo.id}"))
                     self.close()
                 except Exception as e:
                     logToUser("Some streams cannot be accessed: " + str(e), level = 1, func = inspect.stack()[0][3])

@@ -29,7 +29,7 @@ def constructCommitURLfromServerCommit(serverURL: str, stream_id: str) -> str:
     try: 
         header = r.headers['x-speckle-frontend-2']
         #url = streamUrl.replace("streams", "projects") + "/models/" + branch_id + "@" + commit_id
-        url = serverURL + "/streams/" + stream_id # replace with 'projects' after it's implemented in Specklepy
+        url = serverURL + "/projects/" + stream_id # replace with 'projects' after it's implemented in Specklepy
     except:
         url = serverURL + "/streams/" + stream_id
     return url 

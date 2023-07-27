@@ -553,6 +553,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateActiveStreamBranchDropdown(self, plugin):
         if not self: return
         try:
+            print("___ populateActiveStreamBranchDropdown___")
             if plugin.active_stream is None: return
             self.streamBranchDropdown.clear()
             if isinstance(plugin.active_stream[1], SpeckleException): 
@@ -560,10 +561,17 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 return
             elif plugin.active_stream is None or plugin.active_stream[1] is None or plugin.active_stream[1].branches is None:
                 return
+            print(plugin.active_stream[1])
+            print(plugin.active_branch)
             self.streamBranchDropdown.addItems(
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
             self.streamBranchDropdown.addItems(["Create New Branch"])
+
+            # set index to current 
+            if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:
+                self.streamBranchDropdown.setCurrentText(plugin.active_branch.name)
+
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return

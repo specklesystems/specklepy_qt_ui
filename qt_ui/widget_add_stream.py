@@ -99,26 +99,27 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                 if isinstance(stream, Stream): 
                     streams = [stream]
 
-                if "/branches/" in query:
-                    branch_name = query.split("/branches/")[len(query.split("/branches/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
-                    print(branch_name)
-                    print(stream)
-                    print(len(stream.branches.items))
-                    for br in stream.branches.items:
-                        name = urllib.parse.quote(br.name)
-                        print(name)
-                        if name == branch_name:
-                            branch = br
-                            break 
-                elif "/commits/" in query:
-                    commit_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
-                    for br in stream.branches.items:
-                        for com in br.commits.items:
-                            if com.id == commit_id:
+                    if "/branches/" in query:
+                        branch_name = query.split("/branches/")[len(query.split("/branches/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
+                        print(branch_name)
+                        print(stream)
+                        print(len(stream.branches.items))
+                        for br in stream.branches.items:
+                            name = urllib.parse.quote(br.name)
+                            print(name)
+                            if name == branch_name:
                                 branch = br
-                                commit = com 
-                                break
-
+                                break 
+                    elif "/commits/" in query:
+                        commit_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
+                        for br in stream.branches.items:
+                            for com in br.commits.items:
+                                if com.id == commit_id:
+                                    branch = br
+                                    commit = com 
+                                    break
+                elif isinstance(stream, Exception):
+                    print(stream)
                 #if "/commits/" in query:
                 #    branch_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
                 #    for com in stream.

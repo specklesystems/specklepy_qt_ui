@@ -1,4 +1,5 @@
 
+import inspect
 from typing import Any, List
 
 from PyQt5 import QtCore
@@ -20,6 +21,7 @@ class LogWidget(QWidget):
     btns: List[QPushButton]
     max_msg: int
     sendMessage = pyqtSignal(str, int, str, bool)
+    dataStorage = None
 
     active_account: Account
     speckle_version: str
@@ -106,7 +108,8 @@ class LogWidget(QWidget):
         try:
             metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
         except Exception as e:
-            print(e)   
+            print(e)  
+            print(inspect.stack()[0][3]) 
 
     def btnClicked(self, url = ""):
         try:

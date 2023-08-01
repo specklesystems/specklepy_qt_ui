@@ -103,13 +103,16 @@ class LogWidget(QWidget):
         self.msgs.append(text)
         self.used_btns.append(1)
 
-    def openURL(self, url):
-        webbrowser.open(url, new=0, autoraise=True)
+    def openURL(self, url: str = ""):
         try:
             metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
         except Exception as e:
             print(e)  
             print(inspect.stack()[0][3]) 
+            
+        if url is not None and url != "":
+            webbrowser.open(url, new=0, autoraise=True)
+        
 
     def btnClicked(self, url = ""):
         try:

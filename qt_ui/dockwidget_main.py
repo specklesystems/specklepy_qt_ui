@@ -515,7 +515,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.receiveModeButton.setEnabled(plugin.is_setup)
             self.runButton.setEnabled(plugin.is_setup)
             self.streams_add_button.setEnabled(plugin.is_setup)
-            self.commit_web_view.setEnabled(False)
+            self.commit_web_view.setEnabled(plugin.active_commit is not None)
             if plugin.is_setup is False: self.streams_remove_button.setEnabled(plugin.is_setup) 
             self.streamBranchDropdown.setEnabled(plugin.is_setup)
             self.layerSendModeDropdown.setEnabled(plugin.is_setup)
@@ -581,6 +581,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             # set index to current (if added from URL) 
             if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:
+                print("__________SET BRANCH TEXT")
                 self.streamBranchDropdown.setCurrentText(plugin.active_branch.name)
             
         except Exception as e:
@@ -590,6 +591,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateActiveCommitDropdown(self, plugin):
         if not self: return
         try:
+            print("___populateActiveCommitDropdown")
+            print(plugin.active_commit)
             self.commitDropdown.clear()
             if plugin.active_stream is None: return
             branchName = self.streamBranchDropdown.currentText()
@@ -609,25 +612,31 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                         plugin.active_branch = b
                         break
             
-            self.commitDropdown.addItem("Latest commit from this branch")
+            if len(branch.commits.items)>0:
+                self.commitDropdown.addItem("Latest commit from this branch")
+            
+                commits = []
+                for commit in branch.commits.items:
+                    sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
+                    commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
+                self.commitDropdown.addItems(commits)
 
-            commits = []
-            for commit in branch.commits.items:
-                sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
-                commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
-            self.commitDropdown.addItems(commits)
-
-            # set index to current (if added from URL) 
-            if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
-                self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
-            elif len(branch.commits.items)>0:
-                plugin.active_commit = branch.commits.items[0]
+                # set index to current (if added from URL) 
+                if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
+                    print("set index to current (if added from URL) ")
+                    self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
+                elif plugin.active_commit is None:
+                    print("set index to 1st")
+                    plugin.active_commit = branch.commits.items[0]
             else: 
                 plugin.active_commit = None
             
+            # enable or disable web view button 
+            print("_________ENABLE OR DISABLE")
+            print(plugin.active_commit)
             if plugin.active_commit is not None: 
                 self.commit_web_view.setEnabled(True)
-            else:
+            else: 
                 self.commit_web_view.setEnabled(False)
 
         except Exception as e:

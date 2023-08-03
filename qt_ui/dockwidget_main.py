@@ -573,7 +573,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             keep_branch = True # case of search by URL 
             if active_branch is None or active_commit is None: # case of populating from Saved Streams 
                 keep_branch = False
-            print(active_branch.name)
+            print(active_branch)
 
             print(1)
             self.streamBranchDropdown.clear() # activates "populate commit"
@@ -584,7 +584,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             elif plugin.active_stream is None or plugin.active_stream[1] is None or plugin.active_stream[1].branches is None:
                 return
             print(3)
-            print(plugin.active_branch.name)
+            print(plugin.active_branch)
 
             # here the commit dropdown is triggered 
             self.streamBranchDropdown.addItems(
@@ -596,7 +596,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             if keep_branch is True:
                 plugin.active_branch = active_branch
                 plugin.active_commit = active_commit
-            print(plugin.active_branch.name)
+            print(plugin.active_branch)
 
             # set index to current (if added from URL) 
             if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:

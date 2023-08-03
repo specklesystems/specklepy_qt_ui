@@ -100,6 +100,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                     streams = [stream]
 
                     if "/branches/" in query:
+                        print("branches")
                         branch_name = query.split("/branches/")[len(query.split("/branches/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
                         print(branch_name)
                         print(stream)
@@ -111,12 +112,15 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                                 branch = br
                                 break 
                     elif "/commits/" in query:
+                        print("commits")
                         commit_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
                         for br in stream.branches.items:
                             for com in br.commits.items:
                                 if com.id == commit_id:
                                     branch = br
                                     commit = com 
+                                    print(branch)
+                                    print(commit)
                                     break
                 elif isinstance(stream, Exception):
                     print(stream)

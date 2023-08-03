@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from copy import copy
 import inspect
 import os
 
@@ -565,24 +566,48 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         if not self: return
         try:
             print("___ populateActiveStreamBranchDropdown___")
+            print(plugin.active_branch)
             if plugin.active_stream is None: return
-            self.streamBranchDropdown.clear()
+            active_branch = copy(plugin.active_branch)
+            active_commit = copy(plugin.active_commit)
+            keep_branch = True # case of search by URL 
+            if active_branch is None or active_commit is None: # case of populating from Saved Streams 
+                keep_branch = False
+            print(active_branch.name)
+
+            print(1)
+            self.streamBranchDropdown.clear() # activates "populate commit"
+            print(2)
             if isinstance(plugin.active_stream[1], SpeckleException): 
                 logToUser("Some streams cannot be accessed", level = 1, plugin = self)
                 return
             elif plugin.active_stream is None or plugin.active_stream[1] is None or plugin.active_stream[1].branches is None:
                 return
-            #print(plugin.active_stream[1])
-            #print(plugin.active_branch)
+            print(3)
+            print(plugin.active_branch.name)
+
+            # here the commit dropdown is triggered 
             self.streamBranchDropdown.addItems(
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
+            print(4)
             self.streamBranchDropdown.addItems(["Create New Branch"])
+            print(5)
+            if keep_branch is True:
+                plugin.active_branch = active_branch
+                plugin.active_commit = active_commit
+            print(plugin.active_branch.name)
 
             # set index to current (if added from URL) 
             if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:
                 print("__________SET BRANCH TEXT")
-                self.streamBranchDropdown.setCurrentText(plugin.active_branch.name)
+                print(plugin.active_branch.name)
+                if keep_branch is True:
+                    plugin.active_branch = active_branch
+                    plugin.active_commit = active_commit
+                print(plugin.active_branch.name)
+                self.streamBranchDropdown.setCurrentText(plugin.active_branch.name) # activates "populate commit"
+                print(6)
             
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
@@ -596,6 +621,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.commitDropdown.clear()
             if plugin.active_stream is None: return
             branchName = self.streamBranchDropdown.currentText()
+            print(f"CURRENT TEXT: {branchName}")
             if branchName == "": return
             if branchName == "Create New Branch": 
                 self.streamBranchDropdown.setCurrentText("main")
@@ -634,6 +660,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # enable or disable web view button 
             print("_________ENABLE OR DISABLE")
             print(plugin.active_commit)
+            print(f"CURRENT TEXT2: {self.streamBranchDropdown.currentText()}")
             if plugin.active_commit is not None: 
                 self.commit_web_view.setEnabled(True)
             else: 

@@ -1,9 +1,9 @@
 import os 
 
-COLOR_HIGHLIGHT = (210,210,210)
+COLOR_HIGHLIGHT = (210,210,210,1)
 
-SPECKLE_COLOR = (59,130,246)
-SPECKLE_COLOR_LIGHT = (69,140,255)
+SPECKLE_COLOR = (59,130,246,1)
+SPECKLE_COLOR_LIGHT = (69,140,255,1)
 ICON_LOGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "logo-slab-white@0.5x.png")
 
 ICON_SEARCH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "magnify.png")
@@ -21,12 +21,12 @@ ICON_RECEIVE_BLACK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "a
 ICON_SEND_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "cube-send-blue.png")
 ICON_RECEIVE_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "cube-receive-blue.png")
 
-COLOR = f"color: rgb{str(SPECKLE_COLOR)};"
+COLOR = f"color: rgba{str(SPECKLE_COLOR)};"
 BACKGR_COLOR_TRANSPARENT = f"background-color: rgba(0,0,0,0);"
-BACKGR_COLOR_HIGHLIGHT = f"background-color: rgb{str(COLOR_HIGHLIGHT)};"
-BACKGR_COLOR = f"background-color: rgb{str(SPECKLE_COLOR)};"
-BACKGR_COLOR_LIGHT = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
-BACKGR_COLOR_GREY = f"background-color: Gainsboro;"
+BACKGR_COLOR_HIGHLIGHT = f"background-color: rgba{str(COLOR_HIGHLIGHT)};"
+BACKGR_COLOR = f"background-color: rgba{str(SPECKLE_COLOR)};"
+BACKGR_COLOR_LIGHT = f"background-color: rgba{str(SPECKLE_COLOR_LIGHT)};"
+BACKGR_COLOR_GREY = f"background-color: rgba(220,220,220,1);"
 
 
 ICON_XXL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "/size-xxl.png")

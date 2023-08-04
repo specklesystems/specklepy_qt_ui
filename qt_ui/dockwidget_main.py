@@ -86,15 +86,15 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         backgr_image_del = f"border-image: url({ICON_DELETE_BLUE});"
         self.streams_add_button.setIcon(QIcon(ICON_SEARCH))
         self.streams_add_button.setMaximumWidth(25)
-        self.streams_add_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+        self.streams_add_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
         
         self.commit_web_view.setIcon(QIcon(ICON_OPEN_WEB))
         self.commit_web_view.setMaximumWidth(25)
-        self.commit_web_view.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+        self.commit_web_view.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
                 
         self.streams_remove_button.setIcon(QIcon(ICON_DELETE))
         self.streams_remove_button.setMaximumWidth(25)
-        self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
+        self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
 
         self.saveLayerSelection.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
         #self.saveSurveyPoint.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
@@ -102,11 +102,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.closeButton.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
 
 
-        self.sendModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px; " + f"color: rgb{str(SPECKLE_COLOR)};"+ "} QPushButton:hover { "  + "}" ) 
+        self.sendModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px; " + f"color: rgba{str(SPECKLE_COLOR)};"+ "} QPushButton:hover { "  + "}" ) 
         self.sendModeButton.setIcon(QIcon(ICON_SEND_BLUE))
         
         self.receiveModeButton.setFlat(True)
-        self.receiveModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px;}"+ "QPushButton:hover { "  + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + "}" ) 
+        self.receiveModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px;}"+ "QPushButton:hover { "  + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + "}" ) 
         self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLACK))
 
         self.runButton.setStyleSheet("QPushButton {color: white;border: 0px;border-radius: 17px;padding: 10px;"+ f"{BACKGR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
@@ -321,14 +321,14 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def setSendMode(self, plugin):
         try:
             plugin.btnAction = 0 # send 
-            color = f"color: rgb{str(SPECKLE_COLOR)};"
+            color = f"color: rgba{str(SPECKLE_COLOR)};"
             self.sendModeButton.setStyleSheet("border: 0px;"
-                                        f"color: rgb{str(SPECKLE_COLOR)};"
+                                        f"color: rgba{str(SPECKLE_COLOR)};"
                                         "padding: 10px;")
             self.sendModeButton.setIcon(QIcon(ICON_SEND_BLUE))
             self.sendModeButton.setFlat(False)
             self.receiveModeButton.setFlat(True)
-            self.receiveModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px; } QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" +  " };")
+            self.receiveModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px; } QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" +  " };")
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLACK))
             self.runButton.setProperty("text", " SEND")
             self.runButton.setIcon(QIcon(ICON_SEND))
@@ -352,12 +352,12 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def setReceiveMode(self, plugin):
         try:
             plugin.btnAction = 1 # receive 
-            color = f"color: rgb{str(SPECKLE_COLOR)};"
+            color = f"color: rgba{str(SPECKLE_COLOR)};"
             self.receiveModeButton.setStyleSheet("border: 0px;"
-                                        f"color: rgb{str(SPECKLE_COLOR)};"
+                                        f"color: rgba{str(SPECKLE_COLOR)};"
                                         "padding: 10px;")
             self.sendModeButton.setIcon(QIcon(ICON_SEND_BLACK))
-            self.sendModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px;} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};"  + " };")
+            self.sendModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};"  + " };")
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLUE))
             self.sendModeButton.setFlat(True)
             self.receiveModeButton.setFlat(False)

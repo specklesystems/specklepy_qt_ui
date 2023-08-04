@@ -102,27 +102,36 @@ class LogWidget(QWidget):
 
         widget = QWidget()
         boxLayout = QHBoxLayout(widget)
-        boxLayout.addWidget(btn) #, alignment=Qt.AlignCenter) 
-        
-        reportBtn = QPushButton(f"🗎 Report") # to '{streamName}' Sent , v
+
+        reportBtn = QPushButton(f"📈 Report") # to '{streamName}' Sent , v
         reportBtn.clicked.connect(lambda: self.showReport())
-        if report is True:
+        new_grey = BACKGR_COLOR_GREY.replace("1);","0.2);")
+        new_grey_highlight = BACKGR_COLOR_HIGHLIGHT.replace("1);","0.3);")
+        reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{new_grey}" + "} QPushButton:hover { "+ f"{new_grey_highlight}" + " }")
+        reportBtn.setMaximumWidth(150)
+
+        spacer = QPushButton("")
+        spacer.setStyleSheet("QPushButton {padding:0px;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+        spacer.setMaximumWidth(10)
+        
+        # add btns to widget layout 
+        boxLayout.addWidget(btn) #, alignment=Qt.AlignCenter) 
+        if report is True: 
             boxLayout.addWidget(reportBtn)
-            self.reportBtn = reportBtn
+            boxLayout.addWidget(spacer)
 
         if url != "":
-            widget.setStyleSheet("QWidget {;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "} QWidget:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
-            btn.setStyleSheet("QPushButton {color: white;border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+            widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "} QWidget:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
+            btn.setStyleSheet("QPushButton {color: white;border: 0px; padding:0px; padding-left: 10px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
         else: # without url 
             if blue is False: 
                 widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
-                btn.setStyleSheet("QPushButton {color: black; border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+                btn.setStyleSheet("QPushButton {color: black; border: 0px; padding:0px; padding-left: 10px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
             else: # blue, no URL (after receive)
                 widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "}")
-                btn.setStyleSheet("QPushButton {color: white;border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
-
-        reportBtn.setStyleSheet("QPushButton {color: red; border: 0px;border-radius: 17px;padding: 20px;height: 80px;text-align: left"+ f"{BACKGR_COLOR_GREY}" + "} QPushButton:hover { "+ f"{BACKGR_COLOR_HIGHLIGHT}" + " }")
-            
+                btn.setStyleSheet("QPushButton {color: white;border: 0px; padding:0px; padding-left: 10px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+        
+        self.reportBtn = reportBtn 
 
         self.layout.addWidget(widget) #, alignment=Qt.AlignCenter) 
         self.msgs.append(text)
@@ -158,7 +167,7 @@ class LogWidget(QWidget):
         except Exception as e: 
             print(e)
             pass #logger.logToUser(str(e), level=2, func = inspect.stack()[0][3])
-        self.hide()
+        #self.hide()
 
     def getNextBtn(self):
         index = len(self.used_btns) # get the next "free" button 
@@ -195,8 +204,10 @@ class LogWidget(QWidget):
             btn = self.getBtnByKeyword(keyword)
             if btn is not None:
                 btn.setAccessibleName("")
-                btn.setStyleSheet("QPushButton {color: black}")
-                btn.parent().setStyleSheet("QWidget {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+                btn.setStyleSheet("QPushButton {color: black; border: 0px; padding-left: 10px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+                #widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+                #btn.setStyleSheet("QPushButton {color: black}")
+                btn.parent().setStyleSheet("QWidget {border-radius: 17px;padding-left: 10px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
         
         except Exception as e:
             print(e)
@@ -205,7 +216,7 @@ class LogWidget(QWidget):
         try:
             text = btn.text()
             #if len(text.split("\n"))>2:
-            height = len(text.split("\n"))*25 #+ 40 
+            height = len(text.split("\n"))*25 + 20 
             btn.setMinimumHeight(height)
             return btn 
         except Exception as e: 

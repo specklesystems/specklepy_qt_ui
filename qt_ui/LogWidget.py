@@ -4,14 +4,14 @@ from typing import Any, List
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QHBoxLayout
 
 import webbrowser
 from specklepy.logging import metrics
 from specklepy.core.api.credentials import Account
 
 from specklepy_qt_ui.qt_ui.global_resources import (
-    BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY
+    BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY, BACKGR_COLOR_TRANSPARENT, BACKGR_COLOR_HIGHLIGHT
 )
 
 class LogWidget(QWidget):
@@ -20,8 +20,9 @@ class LogWidget(QWidget):
     used_btns: List[int] = []
     btns: List[QPushButton]
     max_msg: int
-    sendMessage = pyqtSignal(str, int, str, bool)
+    sendMessage = pyqtSignal(object)
     dataStorage = None
+    reportBtn = None
 
     active_account: Account
     speckle_version: str
@@ -45,17 +46,19 @@ class LogWidget(QWidget):
         self.layout.setContentsMargins(0, 60, 10, 20)
         self.layout.setAlignment(Qt.AlignBottom) 
         self.setGeometry(0, 0, width, height)
+        self.createBtns()
 
+        self.hide() 
+
+    def createBtns(self):
         # generate 100 buttons to use later
         self.btns = []
         for i in range(self.max_msg):
             button = QPushButton(f"👌 Error") # to '{streamName}' Sent , v
-            button.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+            #button.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
             button.clicked.connect(lambda: self.btnClicked())
             #button.clicked.connect(lambda: self.hide())
             self.btns.append(button)
-
-        self.hide() 
 
     # overriding the mouseReleaseEvent method
     def mouseReleaseEvent(self, event):
@@ -64,45 +67,70 @@ class LogWidget(QWidget):
         #self.parentWidget.hideError()
 
     def hide(self):
+        print("___HIDE LOG WIDGET")
         
         self.setGeometry(0, 0, 0, 0)
 
         # remove all buttons
         for i in reversed(range(self.layout.count())): 
+           print(self.layout.itemAt(i))
+           print(self.layout.itemAt(i).widget())
            self.layout.itemAt(i).widget().setParent(None)
 
+        self.createBtns()
         # remove list of used btns
         self.used_btns.clear()
         self.msgs.clear()
 
-    def addButton(self, text: str = "something went wrong", level: int = 2, url = "", blue = False):
+    def addButton(self, obj: dict):
         print("Add button")
+        text: str = obj["text"]
+        level: int = obj["level"]
+        url: str  = obj["url"]
+        blue: bool = obj["blue"]
+        report: bool = obj["report"]
 
         self.setGeometry(0, 0, self.parentWidget.frameSize().width(), self.parentWidget.frameSize().height())
         
         # find index of the first unused button
         btn, index = self.getNextBtn()
+        print(btn)
         btn.setAccessibleName(url)
-
-        if url != "":
-            btn.setStyleSheet("QPushButton {color: white;border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
-        
-        else:
-            if blue is False: 
-                btn.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
-            else:
-                btn.setStyleSheet("QPushButton {color: white;border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "}")
-        
-        
+        print(btn)
         btn.setText(text)
         self.resizeToText(btn)
 
-        #btn.resize(btn.sizeHint())
-        self.layout.addWidget(btn) #, alignment=Qt.AlignCenter) 
+        widget = QWidget()
+        boxLayout = QHBoxLayout(widget)
+        boxLayout.addWidget(btn) #, alignment=Qt.AlignCenter) 
+        
+        reportBtn = QPushButton(f"🗎 Report") # to '{streamName}' Sent , v
+        reportBtn.clicked.connect(lambda: self.showReport())
+        if report is True:
+            boxLayout.addWidget(reportBtn)
+            self.reportBtn = reportBtn
 
+        if url != "":
+            widget.setStyleSheet("QWidget {;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "} QWidget:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
+            btn.setStyleSheet("QPushButton {color: white;border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+        else: # without url 
+            if blue is False: 
+                widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+                btn.setStyleSheet("QPushButton {color: black; border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+            else: # blue, no URL (after receive)
+                widget.setStyleSheet("QWidget {border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR}" + "}")
+                btn.setStyleSheet("QPushButton {color: white;border: 0px; padding: 20px;text-align: left;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
+
+        reportBtn.setStyleSheet("QPushButton {color: red; border: 0px;border-radius: 17px;padding: 20px;height: 80px;text-align: left"+ f"{BACKGR_COLOR_GREY}" + "} QPushButton:hover { "+ f"{BACKGR_COLOR_HIGHLIGHT}" + " }")
+            
+
+        self.layout.addWidget(widget) #, alignment=Qt.AlignCenter) 
         self.msgs.append(text)
         self.used_btns.append(1)
 
+    def showReport(self):
+        return
+    
     def openURL(self, url: str = ""):
         try:
             metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Open In Web", "connector_version": str(self.speckle_version)})
@@ -134,15 +162,20 @@ class LogWidget(QWidget):
 
     def getNextBtn(self):
         index = len(self.used_btns) # get the next "free" button 
+        print(index)
+        print(self.btns)
 
         if index >= len(self.btns): 
             # remove first button
+            print(self.layout.itemAt(0).widget())
             self.layout.itemAt(0).widget().setParent(None)
 
-            self.used_btns.clear()
+            #self.used_btns.clear()
+            self.createBtns()
             index = 0 
 
         btn = self.btns[index]
+        print(btn)
         return btn, index 
     
     def getBtnByKeyword(self, keyword: str):
@@ -161,13 +194,10 @@ class LogWidget(QWidget):
         try:
             btn = self.getBtnByKeyword(keyword)
             if btn is not None:
-                #if "\n" in btn.text():
-                #    texts = btn.text().split("\n")
-                #    new_text = "\n".join(texts[:-1])
-                #    btn.setText(new_text)
-
                 btn.setAccessibleName("")
-                btn.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+                btn.setStyleSheet("QPushButton {color: black}")
+                btn.parent().setStyleSheet("QWidget {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
+        
         except Exception as e:
             print(e)
         
@@ -175,7 +205,7 @@ class LogWidget(QWidget):
         try:
             text = btn.text()
             #if len(text.split("\n"))>2:
-            height = len(text.split("\n"))*25 + 40 
+            height = len(text.split("\n"))*25 #+ 40 
             btn.setMinimumHeight(height)
             return btn 
         except Exception as e: 

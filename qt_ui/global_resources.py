@@ -22,6 +22,8 @@ ICON_SEND_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "asset
 ICON_RECEIVE_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "cube-receive-blue.png")
 
 COLOR = f"color: rgb{str(SPECKLE_COLOR)};"
+BACKGR_COLOR_TRANSPARENT = f"background-color: rgba(0,0,0,0);"
+BACKGR_COLOR_HIGHLIGHT = f"background-color: rgb{str(COLOR_HIGHLIGHT)};"
 BACKGR_COLOR = f"background-color: rgb{str(SPECKLE_COLOR)};"
 BACKGR_COLOR_LIGHT = f"background-color: rgb{str(SPECKLE_COLOR_LIGHT)};"
 BACKGR_COLOR_GREY = f"background-color: Gainsboro;"

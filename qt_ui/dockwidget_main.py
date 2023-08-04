@@ -204,10 +204,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             widget = QWidget()
             widget.setStyleSheet(f"{BACKGR_COLOR}")
-            connect_box = QHBoxLayout(widget)
-            connect_box.addWidget(text_label) #, alignment=Qt.AlignCenter) 
-            connect_box.addWidget(version_label) 
-            connect_box.setContentsMargins(0, 0, 0, 0)
+            boxLayout = QHBoxLayout(widget)
+            boxLayout.addWidget(text_label) #, alignment=Qt.AlignCenter) 
+            boxLayout.addWidget(version_label) 
+            boxLayout.setContentsMargins(0, 0, 0, 0)
             self.setWindowTitle("SpeckleQGIS")
             self.setTitleBarWidget(widget)
             self.labelWidget = text_label
@@ -262,8 +262,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
         
-    def addMsg(self, text:str, level:int, url:str, blue:bool):
-        self.msgLog.addButton(text, level, url, blue)
+    def addMsg(self, obj:dict):
+        self.msgLog.addButton(obj)
 
     def setupOnFirstLoad(self, plugin):
         try:

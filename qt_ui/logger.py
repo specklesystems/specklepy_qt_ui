@@ -4,7 +4,7 @@ from PyQt5 import QtCore
 
 from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines 
 
-def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False):
+def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False, report = False):
       print("Log to user")
       msg = str(msg)
       if func is not None and func != "None": 
@@ -22,7 +22,7 @@ def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue
             if dockwidget is None: return
             
             new_msg = splitTextIntoLines(msg)
-            dockwidget.msgLog.sendMessage.emit(new_msg, level, url, blue)
+            dockwidget.msgLog.sendMessage.emit({"text":new_msg, "level":level, "url":url, "blue":blue, "report":report})
             
       except Exception as e: print(e); return 
 

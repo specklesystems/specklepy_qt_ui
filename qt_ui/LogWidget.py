@@ -34,7 +34,7 @@ class LogWidget(QWidget):
     def __init__(self, parent=None):
         super(LogWidget, self).__init__(parent)
         self.parentWidget = parent
-        print(self.parentWidget)
+        #print(self.parentWidget)
         self.max_msg = 8
         
         # create a temporary floating button 
@@ -96,9 +96,9 @@ class LogWidget(QWidget):
         
         # find index of the first unused button
         btn, index = self.getNextBtn()
-        print(btn)
+        #print(btn)
         btn.setAccessibleName(url)
-        print(btn)
+        #print(btn)
         btn.setText(text)
         self.resizeToText(btn)
 
@@ -177,8 +177,8 @@ class LogWidget(QWidget):
 
     def getNextBtn(self):
         index = len(self.used_btns) # get the next "free" button 
-        print(index)
-        print(self.btns)
+        #print(index)
+        #print(self.btns)
 
         if index >= len(self.btns): 
             # remove first button
@@ -190,7 +190,7 @@ class LogWidget(QWidget):
             index = 0 
 
         btn = self.btns[index]
-        print(btn)
+        #print(btn)
         return btn, index 
     
     def getBtnByKeyword(self, keyword: str):

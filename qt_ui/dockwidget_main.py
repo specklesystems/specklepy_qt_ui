@@ -12,7 +12,7 @@ from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 from specklepy_qt_ui.qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
-    ICON_OPEN_WEB,
+    ICON_OPEN_WEB, ICON_REPORT,
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
     ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
     ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
@@ -77,6 +77,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.streams_add_button.setFlat(True)
         self.streams_remove_button.setFlat(True)
         self.commit_web_view.setFlat(True)
+        self.reportBtn.setFlat(True)
         #self.saveSurveyPoint.setFlat(True)
         self.saveLayerSelection.setFlat(True)
         self.reloadButton.setFlat(True)
@@ -91,7 +92,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.commit_web_view.setIcon(QIcon(ICON_OPEN_WEB))
         self.commit_web_view.setMaximumWidth(25)
         self.commit_web_view.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
-                
+             
+        self.reportBtn.setIcon(QIcon(ICON_REPORT))
+        self.reportBtn.setMaximumWidth(25)
+        self.reportBtn.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+                 
         self.streams_remove_button.setIcon(QIcon(ICON_DELETE))
         self.streams_remove_button.setMaximumWidth(25)
         self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
@@ -267,9 +272,14 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def setupOnFirstLoad(self, plugin):
         try:
-            
+            print("setupOnFirstLoad")
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
+            print("before")
+            print(self.reportBtn)
+            print(self.msgLog)
+            self.reportBtn.clicked.connect(self.msgLog.showReport)
+            print("after")
 
             self.streams_add_button.clicked.connect( plugin.onStreamAddButtonClicked )
             self.commit_web_view.clicked.connect( lambda: plugin.openUrl(constructCommitURL(plugin.active_stream, plugin.active_branch.id, plugin.active_commit.id)) )
@@ -551,6 +561,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.runButton.setEnabled(plugin.is_setup)
             self.streams_add_button.setEnabled(plugin.is_setup)
             self.commit_web_view.setEnabled(plugin.active_commit is not None)
+            self.reportBtn.setEnabled(False)
             if plugin.is_setup is False: self.streams_remove_button.setEnabled(plugin.is_setup) 
             self.streamBranchDropdown.setEnabled(plugin.is_setup)
             self.layerSendModeDropdown.setEnabled(plugin.is_setup)

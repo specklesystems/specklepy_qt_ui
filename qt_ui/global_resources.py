@@ -8,6 +8,7 @@ ICON_LOGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "
 
 ICON_SEARCH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "magnify.png")
 ICON_OPEN_WEB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "open-in-new.png")
+ICON_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "chart-line.png")
 
 ICON_DELETE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "delete.png")
 ICON_DELETE_BLUE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "delete-blue.png")

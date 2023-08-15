@@ -132,6 +132,15 @@
             </property>
            </widget>
           </item>
+          
+          <item>
+            <widget class="QPushButton" name="reportBtn">
+              <property name="enabled">
+                <bool>true</bool>
+              </property>
+            </widget>
+          </item>
+
          </layout>
         </item>
 
@@ -241,6 +250,7 @@
                 </property>
               </widget>
             </item>
+
           </layout>
         </item>
 

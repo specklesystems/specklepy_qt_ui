@@ -87,7 +87,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
                     layer_name = item.split("  ->  ")[0].split(" (\'")[0]
                     transform_name = item.split("  ->  ")[1]
                     if layer_name == layer.name():
-                        text += f"{layer_name}  ->  '{transform_name}'" + "\n"
+                        text += f"{i+1}.{layer_name}  ->  '{transform_name}'" + "\n"
                         transformExists += 1
                         break 
                 if transformExists==0:

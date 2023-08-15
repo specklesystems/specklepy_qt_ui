@@ -394,8 +394,42 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
     
+    def setActiveCommit(self, plugin):
+        try:
+            print("__setActiveCommit")
+            if plugin.active_branch is None:
+                if plugin.active_stream is not None and plugin.active_stream[1] is not None:
+                    branchName = self.streamBranchDropdown.currentText()
+                    for b in plugin.active_stream[1].branches.items:
+                        if b.name == branchName:
+                            branch = b
+                            plugin.active_branch = b
+                            break
+
+            if plugin.active_branch is None: return
+            print(plugin.active_branch.name)
+
+            current_id_text = str(self.commitDropdown.currentText()).split(" ")[0]
+            print(current_id_text) 
+            if len(plugin.active_branch.commits.items) > 0:
+                if "Latest" in current_id_text:
+                    plugin.active_commit = plugin.active_branch.commits.items[0]
+                    return
+                for c in plugin.active_branch.commits.items:
+                    if c.id == current_id_text:
+                        plugin.active_commit = c
+                        return 
+                # only if not found: 
+                plugin.active_commit = plugin.active_branch.commits.items[0]
+            else:
+                plugin.active_commit = None
+        except Exception as e:
+            plugin.active_commit = None
+            print(e) 
+
     def runBtnStatusChanged(self, plugin):
         try:
+            self.setActiveCommit(plugin)
             commitStr = str(self.commitDropdown.currentText())
             branchStr = str(self.streamBranchDropdown.currentText())
 
@@ -651,7 +685,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
                     print("set index to current (if added from URL) ")
                     self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
-                elif plugin.active_commit is None:
+                else: #overwrite active commit if plugin.active_commit is None:
                     print("set index to 1st")
                     plugin.active_commit = branch.commits.items[0]
             else: 

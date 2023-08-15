@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtCore
 
-from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines 
+from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
 
 def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False, report = False):
       print("Log to user")
@@ -46,7 +46,9 @@ def createWindow(msg_old: str, func=None, level: int = 2):
             window = QMessageBox()
             msg = ""
             if len(msg_old)>80:
-                  msg = splitTextIntoLines(msg_old)
+                  for line in msg_old.split("\n"):
+                        line = splitTextIntoLines(line)
+                        msg += line + "\n"
             else: 
                   msg = msg_old
       
@@ -61,6 +63,7 @@ def createWindow(msg_old: str, func=None, level: int = 2):
                   window.setWindowTitle("Error (Speckle)")
                   window.setIcon(QMessageBox.Icon.Critical)
             window.setFixedWidth(200)
+            #window.setTextFormat(QtCore.Qt.RichText)
 
             if func is not None:
                   window.setText(str(msg + "\n" + str(func)))

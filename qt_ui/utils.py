@@ -1,7 +1,7 @@
 
 from textwrap import wrap
 
-def splitTextIntoLines(text: str = "", number: int= 70) -> str: 
+def splitTextIntoLines(text: str = "", number: int= 50) -> str: 
     print("__splitTextIntoLines")
     #print(text)
     msg = ""
@@ -56,4 +56,3 @@ def constructCommitURLfromServerCommit(serverURL: str, stream_id: str) -> str:
 #def removeSpecialCharacters(text: str) -> str:
 #    new_text = text.replace("[","_").replace("]","_").replace(" ","_").replace("-","_").replace("(","_").replace(")","_").replace(":","_").replace("\\","_").replace("/","_").replace("\"","_").replace("&","_").replace("@","_").replace("$","_").replace("%","_").replace("^","_")
 #    return new_text
-

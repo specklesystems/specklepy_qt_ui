@@ -13,6 +13,7 @@ from specklepy.core.api.credentials import Account
 from specklepy_qt_ui.qt_ui.global_resources import (
     BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY, BACKGR_COLOR_TRANSPARENT, BACKGR_COLOR_HIGHLIGHT
 )
+from specklepy_qt_ui.qt_ui.widget_report import ReportDialog 
 
 class LogWidget(QWidget):
     
@@ -26,7 +27,8 @@ class LogWidget(QWidget):
 
     active_account: Account
     speckle_version: str
-    dockwidget: Any
+    dockwidget: Any = None
+    reportDialog: Any = None
     
     # constructor
     def __init__(self, parent=None):
@@ -138,6 +140,10 @@ class LogWidget(QWidget):
         self.used_btns.append(1)
 
     def showReport(self):
+        self.reportDialog = ReportDialog()
+        self.reportDialog.dataStorage = self.dataStorage
+        self.reportDialog.applyReport()
+        self.reportDialog.show()
         return
     
     def openURL(self, url: str = ""):

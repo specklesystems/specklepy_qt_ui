@@ -22,9 +22,9 @@ class DataStorage:
     custom_lat: Optional[float] = None
     custom_lon: Optional[float] = None
     
-    crs_offset_x: Optional[float] = None 
-    crs_offset_y: Optional[float] = None 
-    crs_rotation: Optional[float] = None 
+    crs_offset_x: Optional[float] = 0 
+    crs_offset_y: Optional[float] = 0 
+    crs_rotation: Optional[float] = 0 
 
     current_layer_crs_offset_x: Optional[float] = None 
     current_layer_crs_offset_y: Optional[float] = None 
@@ -32,7 +32,6 @@ class DataStorage:
 
     current_layers: Union[List[Tuple[Any, str, str]], None] = None 
     saved_layers: Union[List, None] = None 
-    sending_layers: None
     all_layers: Union[List, None] = None 
 
     elevationLayer: None 
@@ -40,6 +39,12 @@ class DataStorage:
     transformsCatalog: Union[List, None] = None
 
     matrix = None # if receiving instance with transform 
+
+    latestActionReport: Optional[list] = None 
+    latestActionFeaturesReport: Optional[list] = None 
+    latestActionTime: str = ""
+    latestActionLayers: Optional[list] = None 
+    latestActionUnits: str = ""
 
     def __init__(self):
         print("hello")

@@ -81,17 +81,19 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
         # layers and transformations (if applicable)
         text += "Layers and transformations (if applicable):" + "\n"
         for i, layer in enumerate(self.dataStorage.latestActionLayers):
+            #print(self.dataStorage.latestActionLayers)
+            name = layer #if isinstance(layer, str) else layer.name()
             try: 
                 transformExists = 0
                 for item in self.dataStorage.savedTransforms:
                     layer_name = item.split("  ->  ")[0].split(" (\'")[0]
                     transform_name = item.split("  ->  ")[1]
-                    if layer_name == layer.name():
+                    if layer_name == name:
                         text += f"{i+1}.{layer_name}  ->  '{transform_name}'" + "\n"
                         transformExists += 1
                         break 
                 if transformExists==0:
-                    text += f"{layer.name()} \n"
+                    text += f"{name} \n"
             except Exception as e: print(e)
         text +=  "\n"
 

@@ -75,8 +75,8 @@ class LogWidget(QWidget):
 
         # remove all buttons
         for i in reversed(range(self.layout.count())): 
-           print(self.layout.itemAt(i))
-           print(self.layout.itemAt(i).widget())
+           #print(self.layout.itemAt(i))
+           #print(self.layout.itemAt(i).widget())
            self.layout.itemAt(i).widget().setParent(None)
 
         self.createBtns()

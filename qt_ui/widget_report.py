@@ -42,6 +42,8 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
     def assembleReport(self):
         if self.dataStorage is None: return 
         reportList = self.dataStorage.latestActionReport
+        if reportList is None: return
+
         operation = ""
         total_layers = 0
         total_objects = 0
@@ -93,7 +95,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
                         transformExists += 1
                         break 
                 if transformExists==0:
-                    text += f"{name} \n"
+                    text += f"{i+1}.{name} \n"
             except Exception as e: print(e)
         text +=  "\n"
 

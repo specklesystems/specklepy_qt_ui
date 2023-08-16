@@ -292,6 +292,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
             self.commitDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
+            self.commitDropdown.currentIndexChanged.connect( lambda: self.setActiveCommit(plugin) )
 
             self.closingPlugin.connect(plugin.onClosePlugin)
             return 
@@ -407,6 +408,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def setActiveCommit(self, plugin):
         try:
             print("__setActiveCommit")
+            print(plugin.active_commit)
             if plugin.active_branch is None:
                 if plugin.active_stream is not None and plugin.active_stream[1] is not None:
                     branchName = self.streamBranchDropdown.currentText()
@@ -421,6 +423,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             current_id_text = str(self.commitDropdown.currentText()).split(" ")[0]
             print(current_id_text) 
+            if current_id_text == "": # populate commits still in progress 
+                return
+            
             if len(plugin.active_branch.commits.items) > 0:
                 if "Latest" in current_id_text:
                     plugin.active_commit = plugin.active_branch.commits.items[0]
@@ -439,7 +444,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def runBtnStatusChanged(self, plugin):
         try:
-            self.setActiveCommit(plugin)
             commitStr = str(self.commitDropdown.currentText())
             branchStr = str(self.streamBranchDropdown.currentText())
 
@@ -661,18 +665,23 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateActiveCommitDropdown(self, plugin):
         if not self: return
         try:
-            print("___populateActiveCommitDropdown")
+            print("________populateActiveCommitDropdown")
             print(plugin.active_commit)
-            self.commitDropdown.clear()
-            if plugin.active_stream is None: return
+            if plugin.active_stream is None: 
+                print("Active stream is None")
+                return
             branchName = self.streamBranchDropdown.currentText()
-            print(f"CURRENT TEXT: {branchName}")
+            print(f"CURRENT BRANCH TEXT: {branchName}")
             if branchName == "": return
             if branchName == "Create New Branch": 
                 self.streamBranchDropdown.setCurrentText("main")
                 plugin.onBranchCreateClicked()
                 return
             branch = None
+            
+            print("__clear commit dropdwn")
+            print(plugin.active_commit)
+            self.commitDropdown.clear()
             if isinstance(plugin.active_stream[1], SpeckleException): 
                 logToUser("Some streams cannot be accessed", level = 1, plugin = self)
                 return
@@ -684,9 +693,12 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                         break
             
             if len(branch.commits.items)>0:
-                self.commitDropdown.addItem("Latest commit from this branch")
-            
                 commits = []
+                commits.append("")
+                #commits.append("Latest commit from this branch")
+                #self.commitDropdown.addItem("Latest commit from this branch")
+            
+                #commits = []
                 for commit in branch.commits.items:
                     sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
                     commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
@@ -695,6 +707,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 # set index to current (if added from URL) 
                 if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
                     print("set index to current (if added from URL) ")
+                    print(plugin.active_commit)
                     self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
                 else: #overwrite active commit if plugin.active_commit is None:
                     print("set index to 1st")
@@ -702,6 +715,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             else: 
                 plugin.active_commit = None
             
+            self.commitDropdown.setItemText(0, "Latest commit from this branch")
             # enable or disable web view button 
             print("_________ENABLE OR DISABLE")
             print(plugin.active_commit)

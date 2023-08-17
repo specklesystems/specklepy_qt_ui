@@ -59,6 +59,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     signal_3 = pyqtSignal(object)
     signal_4 = pyqtSignal(object)
     signal_5 = pyqtSignal(object)
+    signal_6 = pyqtSignal(object)
 
     def __init__(self, parent=None):
         """Constructor."""

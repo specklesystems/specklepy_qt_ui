@@ -40,6 +40,7 @@ class DataStorage:
 
     matrix = None # if receiving instance with transform 
 
+    latestHostApp: str = ""
     latestActionReport: Optional[list] = None 
     latestActionFeaturesReport: Optional[list] = None 
     latestActionTime: str = ""

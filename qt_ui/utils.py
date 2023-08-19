@@ -1,7 +1,7 @@
 
 from textwrap import wrap
 
-def splitTextIntoLines(text: str = "", number: int= 50) -> str: 
+def splitTextIntoLines(text: str = "", number: int= 40) -> str: 
     print("__splitTextIntoLines")
     #print(text)
     msg = ""

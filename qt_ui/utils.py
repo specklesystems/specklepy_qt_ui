@@ -2,7 +2,7 @@
 from textwrap import wrap
 
 def splitTextIntoLines(text: str = "", number: int= 40) -> str: 
-    print("__splitTextIntoLines")
+    #print("__splitTextIntoLines")
     #print(text)
     msg = ""
     try:

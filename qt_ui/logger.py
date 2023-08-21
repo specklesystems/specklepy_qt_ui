@@ -5,12 +5,12 @@ from PyQt5 import QtCore
 from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
 
 def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue = False, report = False):
-      print("Log to user")
+      #print("Log to user")
       msg = str(msg)
-      if func is not None and func != "None": 
-            print(msg + " " + url + "::" + str(func))
-      else: 
-            print(msg + " " + url )
+      #if func is not None and func != "None": 
+      #      print(msg + " " + url + "::" + str(func))
+      #else: 
+      #      print(msg + " " + url )
 
       dockwidget = plugin
       try: 

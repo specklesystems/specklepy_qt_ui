@@ -85,7 +85,7 @@ class LogWidget(QWidget):
         self.msgs.clear()
 
     def addButton(self, obj: dict):
-        print("Add button")
+        #print("Add button")
         text: str = obj["text"]
         level: int = obj["level"]
         url: str  = obj["url"]

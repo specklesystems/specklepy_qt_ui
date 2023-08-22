@@ -49,6 +49,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
             total_layers = 0
             total_objects = 0
             text = ""
+            sending = True
             
             # details 
             last_report = ""
@@ -59,6 +60,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
                     line += f'{item["feature_id"]}: {item["obj_type"]}'
                     operation = f"Sent at {self.dataStorage.latestActionTime}"
                 except: # if receiving
+                    sending = False
                     line += f'{item["speckle_id"]}: {item["obj_type"]}'
                     operation = f"Received at {self.dataStorage.latestActionTime}"
                 
@@ -80,6 +82,10 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
 
             text += f"Operation: {operation}\n"
             text += f"Total: {total_layers} layer{'' if str(total_layers).endswith('1') else 's'}, {total_objects} feature{'' if str(total_objects).endswith('1') else 's'}\n\n"
+            if sending is False: 
+                try:
+                    text += f"Host application: {self.dataStorage.latestHostApp}\n\n"
+                except: pass 
 
             # layers and transformations (if applicable)
             text += "Layers and transformations (if applicable):" + "\n"

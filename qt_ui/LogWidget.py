@@ -205,7 +205,7 @@ class LogWidget(QWidget):
         except Exception as e:
             print(e)
     
-    def removeBtnUrl(self, keyword: str):
+    def removeBtnUrl(self, keyword: str = "cancel"):
         try:
             btn = self.getBtnByKeyword(keyword)
             if btn is not None:

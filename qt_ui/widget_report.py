@@ -125,6 +125,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
         result = self.assembleReport()
         if result is None:
             print("no report generated")
+            return 
         operation, total_layers, total_objects, report = result
         #self.report_label.setText(f"Operation: {operation}\nTotal: {total_layers} layer{'' if str(total_layers).endswith('1') else 's'}, {total_objects} feature{'' if str(total_objects).endswith('1') else 's'}")
         self.report_text.setText(report)

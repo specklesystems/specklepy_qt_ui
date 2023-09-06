@@ -85,6 +85,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.saveLayerSelection.setFlat(True)
         self.reloadButton.setFlat(True)
         self.closeButton.setFlat(True)
+        self.commit_web_view.setEnabled(False)
 
         # https://stackoverflow.com/questions/67585501/pyqt-how-to-use-hover-in-button-stylesheet
         backgr_image_del = f"border-image: url({ICON_DELETE_BLUE});"
@@ -293,9 +294,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.layerSendModeDropdown.currentIndexChanged.connect( lambda: self.layerSendModeChange(plugin) )
             self.receiveModeButton.clicked.connect(lambda: self.setReceiveMode(plugin))
 
-            self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
-            self.commitDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
+            #self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
             self.commitDropdown.currentIndexChanged.connect( lambda: self.setActiveCommit(plugin) )
+            self.commitDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
 
             self.closingPlugin.connect(plugin.onClosePlugin)
             return 
@@ -356,6 +357,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.messageInput.setEnabled(True)
             self.layerSendModeDropdown.setEnabled(True)
             self.setMapping.setEnabled(True)
+            self.commit_web_view.setEnabled(False)
 
             self.runBtnStatusChanged(plugin)
             return
@@ -386,6 +388,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.saveLayerSelection.setEnabled(False)
             self.layerSendModeDropdown.setEnabled(False)
             self.setMapping.setEnabled(False)
+            self.commit_web_view.setEnabled(True)
 
             self.runBtnStatusChanged(plugin)
             return
@@ -401,8 +404,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.populateLayerSendModeDropdown()
             self.populateProjectStreams(plugin)
 
-            self.runBtnStatusChanged(plugin)
-            self.runButton.setEnabled(False) 
+            #self.runBtnStatusChanged(plugin)
+            #self.runButton.setEnabled(False) 
             
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
@@ -449,6 +452,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         try:
             commitStr = str(self.commitDropdown.currentText())
             branchStr = str(self.streamBranchDropdown.currentText())
+            
+            if commitStr == "": # populate commits still in progress 
+                return
 
             if plugin.btnAction == 1: # on receive
                 if commitStr == "": 

@@ -92,7 +92,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             streams = []
             branch = None
             commit = None
-            print("_____ onSearchClicked___")
+            #print("_____ onSearchClicked___")
             if "http" in query and len(query.split("/")) >= 3: # URL
                 sw = StreamWrapper(query)
                 stream = sw.get_client().stream.get(id = sw.stream_id, branch_limit = 100, commit_limit = 100)
@@ -100,27 +100,27 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                     streams = [stream]
 
                     if "/branches/" in query:
-                        print("branches")
+                        #print("branches")
                         branch_name = query.split("/branches/")[len(query.split("/branches/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
-                        print(branch_name)
-                        print(stream)
-                        print(len(stream.branches.items))
+                        #print(branch_name)
+                        #print(stream)
+                        #print(len(stream.branches.items))
                         for br in stream.branches.items:
                             name = urllib.parse.quote(br.name)
-                            print(name)
+                            #print(name)
                             if name == branch_name:
                                 branch = br
                                 break 
                     elif "/commits/" in query:
-                        print("commits")
+                        #print("commits")
                         commit_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
                         for br in stream.branches.items:
                             for com in br.commits.items:
                                 if com.id == commit_id:
                                     branch = br
                                     commit = com 
-                                    print(branch)
-                                    print(commit)
+                                    #print(branch)
+                                    #print(commit)
                                     break
                 elif isinstance(stream, Exception):
                     print(stream)

@@ -276,14 +276,14 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def setupOnFirstLoad(self, plugin):
         try:
-            print("setupOnFirstLoad")
+            #print("setupOnFirstLoad")
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
-            print("before")
-            print(self.reportBtn)
-            print(self.msgLog)
+            #print("before")
+            #print(self.reportBtn)
+            #print(self.msgLog)
             self.reportBtn.clicked.connect(self.msgLog.showReport)
-            print("after")
+            #print("after")
 
             self.streams_add_button.clicked.connect( plugin.onStreamAddButtonClicked )
             self.commit_web_view.clicked.connect( lambda: plugin.openUrl(constructCommitURL(plugin.active_stream, plugin.active_branch.id, plugin.active_commit.id)) )
@@ -495,7 +495,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateSavedLayerDropdown(self, plugin):
         
         try:
-            print(self.dataStorage.saved_layers)
+            #print(self.dataStorage.saved_layers)
             if not self: return
             self.layersWidget.clear()
 
@@ -715,11 +715,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
                 # set index to current (if added from URL) 
                 if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
-                    print("set index to current (if added from URL) ")
-                    print(plugin.active_commit)
+                    #print("set index to current (if added from URL) ")
+                    #print(plugin.active_commit)
                     self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
                 else: #overwrite active commit if plugin.active_commit is None:
-                    print("set index to 1st")
+                    #print("set index to 1st")
                     plugin.active_commit = branch.commits.items[0]
             else: 
                 plugin.active_commit = None

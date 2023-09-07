@@ -18,7 +18,6 @@ def logToUser(msg: str, func=None, level: int = 2, plugin = None, url = "", blue
                   msg = addLevelSymbol(msg, level)
                   if func is not None: 
                         msg += "::" + str(func)
-            
             if dockwidget is None: return
             
             new_msg = splitTextIntoLines(msg)
@@ -39,7 +38,7 @@ def displayUserMsg(msg: str, func=None, level: int = 2):
       except Exception as e: print(e)
 
 def createWindow(msg_old: str, func=None, level: int = 2):
-      print("Create window")
+      #print("Create window")
       window = None
       try:
             # https://www.techwithtim.net/tutorials/pyqt5-tutorial/messageboxes/
@@ -69,7 +68,7 @@ def createWindow(msg_old: str, func=None, level: int = 2):
                   window.setText(str(msg + "\n" + str(func)))
             else: 
                   window.setText(str(msg))
-            print(window)
+            #print(window)
       except Exception as e: print(e)
       return window 
 

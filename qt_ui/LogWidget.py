@@ -64,12 +64,12 @@ class LogWidget(QWidget):
 
     # overriding the mouseReleaseEvent method
     def mouseReleaseEvent(self, event):
-        print("Mouse Release Event")
+        #print("Mouse Release Event")
         self.hide() 
         #self.parentWidget.hideError()
 
     def hide(self):
-        print("___HIDE LOG WIDGET")
+        #print("___HIDE LOG WIDGET")
         
         self.setGeometry(0, 0, 0, 0)
 

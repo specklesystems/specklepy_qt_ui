@@ -729,7 +729,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             #print("_________ENABLE OR DISABLE")
             #print(plugin.active_commit)
             #print(f"CURRENT TEXT2: {self.streamBranchDropdown.currentText()}")
-            if plugin.active_commit is not None: 
+            if plugin.active_commit is not None and plugin.btnAction == 1: 
                 self.commit_web_view.setEnabled(True)
             else: 
                 self.commit_web_view.setEnabled(False)

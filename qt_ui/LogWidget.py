@@ -11,7 +11,8 @@ from specklepy.logging import metrics
 from specklepy.core.api.credentials import Account
 
 from specklepy_qt_ui.qt_ui.global_resources import (
-    BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY, BACKGR_COLOR_TRANSPARENT, BACKGR_COLOR_HIGHLIGHT
+    BACKGR_COLOR, BACKGR_COLOR_LIGHT, BACKGR_COLOR_GREY, BACKGR_COLOR_TRANSPARENT, BACKGR_COLOR_HIGHLIGHT,
+    NEW_GREY, NEW_GREY_HIGHLIGHT, BACKGR_ERROR_COLOR, BACKGR_ERROR_COLOR_LIGHT
 )
 from specklepy_qt_ui.qt_ui.widget_report import ReportDialog 
 
@@ -105,20 +106,28 @@ class LogWidget(QWidget):
         widget = QWidget()
         boxLayout = QHBoxLayout(widget)
 
-        reportBtn = QPushButton(f"📈 Report") # to '{streamName}' Sent , v
-        reportBtn.clicked.connect(lambda: self.showReport())
-        new_grey = BACKGR_COLOR_GREY.replace("1);","0.2);")
-        new_grey_highlight = BACKGR_COLOR_HIGHLIGHT.replace("1);","0.3);")
-        reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{new_grey}" + "} QPushButton:hover { "+ f"{new_grey_highlight}" + " }")
-        reportBtn.setMaximumWidth(150)
-
         spacer = QPushButton("")
         spacer.setStyleSheet("QPushButton {padding:0px;"+ f"{BACKGR_COLOR_TRANSPARENT}" + "}")
         spacer.setMaximumWidth(10)
         
         # add btns to widget layout 
         boxLayout.addWidget(btn) #, alignment=Qt.AlignCenter) 
+        
+        # add report 
+        reportBtn = QPushButton(f"☑️ Report") # 📈 to '{streamName}' Sent , v
+        reportBtn.clicked.connect(lambda: self.showReport())
+        reportBtn.setMaximumWidth(150)
+        reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{NEW_GREY}" + "} QPushButton:hover { "+ f"{NEW_GREY_HIGHLIGHT}" + " }")
+
         if report is True: 
+            # color report btn 
+            reportList = self.dataStorage.latestActionReport
+            for item in reportList:
+                if item["errors"] != "":
+                    reportBtn.setText("⚠️ Report")
+                    #reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{BACKGR_ERROR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_ERROR_COLOR_LIGHT}" + " }")
+                    break 
+
             boxLayout.addWidget(reportBtn)
             boxLayout.addWidget(spacer)
 

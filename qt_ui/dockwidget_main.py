@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from copy import copy
 import inspect
 import os
 
 from specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
 from specklepy_qt_ui.qt_ui.LogWidget import LogWidget
 from specklepy_qt_ui.qt_ui.logger import logToUser
+from specklepy_qt_ui.qt_ui.utils import constructCommitURL
 from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 from specklepy_qt_ui.qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
+    ICON_OPEN_WEB, ICON_REPORT,
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
     ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
     ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
@@ -55,6 +58,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     signal_2 = pyqtSignal(object)
     signal_3 = pyqtSignal(object)
     signal_4 = pyqtSignal(object)
+    signal_5 = pyqtSignal(object)
+    signal_6 = pyqtSignal(object)
+    signal_cancel_operation = pyqtSignal(str)
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -73,19 +79,31 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.streams_add_button.setFlat(True)
         self.streams_remove_button.setFlat(True)
+        self.commit_web_view.setFlat(True)
+        self.reportBtn.setFlat(True)
         #self.saveSurveyPoint.setFlat(True)
         self.saveLayerSelection.setFlat(True)
         self.reloadButton.setFlat(True)
         self.closeButton.setFlat(True)
+        self.commit_web_view.setEnabled(False)
 
         # https://stackoverflow.com/questions/67585501/pyqt-how-to-use-hover-in-button-stylesheet
         backgr_image_del = f"border-image: url({ICON_DELETE_BLUE});"
         self.streams_add_button.setIcon(QIcon(ICON_SEARCH))
         self.streams_add_button.setMaximumWidth(25)
-        self.streams_add_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+        self.streams_add_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+        
+        self.commit_web_view.setIcon(QIcon(ICON_OPEN_WEB))
+        self.commit_web_view.setMaximumWidth(25)
+        self.commit_web_view.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+             
+        self.reportBtn.setIcon(QIcon(ICON_REPORT))
+        self.reportBtn.setMaximumWidth(25)
+        self.reportBtn.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }")
+                 
         self.streams_remove_button.setIcon(QIcon(ICON_DELETE))
         self.streams_remove_button.setMaximumWidth(25)
-        self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
+        self.streams_remove_button.setStyleSheet("QPushButton {padding:3px;padding-left:5px;border: none; text-align: left; image-position:right} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + f"{COLOR}" + " }") #+ f"{backgr_image_del}" 
 
         self.saveLayerSelection.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
         #self.saveSurveyPoint.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
@@ -93,11 +111,11 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         self.closeButton.setStyleSheet("QPushButton {text-align: right;} QPushButton:hover { " + f"{COLOR}" + " }")
 
 
-        self.sendModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px; " + f"color: rgb{str(SPECKLE_COLOR)};"+ "} QPushButton:hover { "  + "}" ) 
+        self.sendModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px; " + f"color: rgba{str(SPECKLE_COLOR)};"+ "} QPushButton:hover { "  + "}" ) 
         self.sendModeButton.setIcon(QIcon(ICON_SEND_BLUE))
         
         self.receiveModeButton.setFlat(True)
-        self.receiveModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px;}"+ "QPushButton:hover { "  + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" + "}" ) 
+        self.receiveModeButton.setStyleSheet("QPushButton {padding: 10px; border: 0px;}"+ "QPushButton:hover { "  + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" + "}" ) 
         self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLACK))
 
         self.runButton.setStyleSheet("QPushButton {color: white;border: 0px;border-radius: 17px;padding: 10px;"+ f"{BACKGR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_COLOR_LIGHT}" + " }")
@@ -119,7 +137,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         
         # add widgets that will only show on event trigger 
         logWidget = LogWidget(parent=self)
-        logWidget.dataStorage = plugin.dataStorage
+        logWidget.dataStorage = self.dataStorage
+
         self.layout().addWidget(logWidget)
         self.msgLog = logWidget 
         self.msgLog.dockwidget = self 
@@ -195,10 +214,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
             widget = QWidget()
             widget.setStyleSheet(f"{BACKGR_COLOR}")
-            connect_box = QHBoxLayout(widget)
-            connect_box.addWidget(text_label) #, alignment=Qt.AlignCenter) 
-            connect_box.addWidget(version_label) 
-            connect_box.setContentsMargins(0, 0, 0, 0)
+            boxLayout = QHBoxLayout(widget)
+            boxLayout.addWidget(text_label) #, alignment=Qt.AlignCenter) 
+            boxLayout.addWidget(version_label) 
+            boxLayout.setContentsMargins(0, 0, 0, 0)
             self.setWindowTitle("SpeckleQGIS")
             self.setTitleBarWidget(widget)
             self.labelWidget = text_label
@@ -253,16 +272,22 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
         
-    def addMsg(self, text:str, level:int, url:str, blue:bool):
-        self.msgLog.addButton(text, level, url, blue)
+    def addMsg(self, obj:dict):
+        self.msgLog.addButton(obj)
 
     def setupOnFirstLoad(self, plugin):
         try:
-            
+            #print("setupOnFirstLoad")
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
+            #print("before")
+            #print(self.reportBtn)
+            #print(self.msgLog)
+            self.reportBtn.clicked.connect(self.msgLog.showReport)
+            #print("after")
 
             self.streams_add_button.clicked.connect( plugin.onStreamAddButtonClicked )
+            self.commit_web_view.clicked.connect( lambda: plugin.openUrl(constructCommitURL(plugin.active_stream, plugin.active_branch.id, plugin.active_commit.id)) )
             self.reloadButton.clicked.connect(lambda: self.refreshClicked(plugin))
             self.closeButton.clicked.connect(lambda: self.closeClicked(plugin))
 
@@ -270,7 +295,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.layerSendModeDropdown.currentIndexChanged.connect( lambda: self.layerSendModeChange(plugin) )
             self.receiveModeButton.clicked.connect(lambda: self.setReceiveMode(plugin))
 
-            self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
+            #self.streamBranchDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
+            self.commitDropdown.currentIndexChanged.connect( lambda: self.setActiveCommit(plugin) )
             self.commitDropdown.currentIndexChanged.connect( lambda: self.runBtnStatusChanged(plugin) )
 
             self.closingPlugin.connect(plugin.onClosePlugin)
@@ -311,14 +337,14 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def setSendMode(self, plugin):
         try:
             plugin.btnAction = 0 # send 
-            color = f"color: rgb{str(SPECKLE_COLOR)};"
+            color = f"color: rgba{str(SPECKLE_COLOR)};"
             self.sendModeButton.setStyleSheet("border: 0px;"
-                                        f"color: rgb{str(SPECKLE_COLOR)};"
+                                        f"color: rgba{str(SPECKLE_COLOR)};"
                                         "padding: 10px;")
             self.sendModeButton.setIcon(QIcon(ICON_SEND_BLUE))
             self.sendModeButton.setFlat(False)
             self.receiveModeButton.setFlat(True)
-            self.receiveModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px; } QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};" +  " };")
+            self.receiveModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px; } QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};" +  " };")
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLACK))
             self.runButton.setProperty("text", " SEND")
             self.runButton.setIcon(QIcon(ICON_SEND))
@@ -332,6 +358,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.messageInput.setEnabled(True)
             self.layerSendModeDropdown.setEnabled(True)
             self.setMapping.setEnabled(True)
+            self.commit_web_view.setEnabled(False)
 
             self.runBtnStatusChanged(plugin)
             return
@@ -342,12 +369,12 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def setReceiveMode(self, plugin):
         try:
             plugin.btnAction = 1 # receive 
-            color = f"color: rgb{str(SPECKLE_COLOR)};"
+            color = f"color: rgba{str(SPECKLE_COLOR)};"
             self.receiveModeButton.setStyleSheet("border: 0px;"
-                                        f"color: rgb{str(SPECKLE_COLOR)};"
+                                        f"color: rgba{str(SPECKLE_COLOR)};"
                                         "padding: 10px;")
             self.sendModeButton.setIcon(QIcon(ICON_SEND_BLACK))
-            self.sendModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px;} QPushButton:hover { " + f"background-color: rgb{str(COLOR_HIGHLIGHT)};"  + " };")
+            self.sendModeButton.setStyleSheet("QPushButton {border: 0px; color: black; padding: 10px;} QPushButton:hover { " + f"background-color: rgba{str(COLOR_HIGHLIGHT)};"  + " };")
             self.receiveModeButton.setIcon(QIcon(ICON_RECEIVE_BLUE))
             self.sendModeButton.setFlat(True)
             self.receiveModeButton.setFlat(False)
@@ -362,6 +389,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.saveLayerSelection.setEnabled(False)
             self.layerSendModeDropdown.setEnabled(False)
             self.setMapping.setEnabled(False)
+            self.commit_web_view.setEnabled(True)
 
             self.runBtnStatusChanged(plugin)
             return
@@ -373,12 +401,61 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         return
 
     def populateUI(self, plugin):
-        return
+        try:
+            self.populateLayerSendModeDropdown()
+            self.populateProjectStreams(plugin)
+
+            #self.runBtnStatusChanged(plugin)
+            #self.runButton.setEnabled(False) 
+            
+        except Exception as e:
+            logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
+            return
     
+    def setActiveCommit(self, plugin):
+        try:
+            #print("__setActiveCommit")
+            #print(plugin.active_commit)
+            if plugin.active_branch is None:
+                if plugin.active_stream is not None and plugin.active_stream[1] is not None:
+                    branchName = self.streamBranchDropdown.currentText()
+                    for b in plugin.active_stream[1].branches.items:
+                        if b.name == branchName:
+                            branch = b
+                            plugin.active_branch = b
+                            break
+
+            if plugin.active_branch is None: return
+            #print(plugin.active_branch.name)
+
+            current_id_text = str(self.commitDropdown.currentText()).split(" ")[0]
+            #print(current_id_text) 
+            if current_id_text == "": # populate commits still in progress 
+                return
+            
+            if len(plugin.active_branch.commits.items) > 0:
+                if "Latest" in current_id_text:
+                    plugin.active_commit = plugin.active_branch.commits.items[0]
+                    return
+                for c in plugin.active_branch.commits.items:
+                    if c.id == current_id_text:
+                        plugin.active_commit = c
+                        return 
+                # only if not found: 
+                plugin.active_commit = plugin.active_branch.commits.items[0]
+            else:
+                plugin.active_commit = None
+        except Exception as e:
+            plugin.active_commit = None
+            print(e) 
+
     def runBtnStatusChanged(self, plugin):
         try:
             commitStr = str(self.commitDropdown.currentText())
             branchStr = str(self.streamBranchDropdown.currentText())
+            
+            if commitStr == "": # populate commits still in progress 
+                return
 
             if plugin.btnAction == 1: # on receive
                 if commitStr == "": 
@@ -497,6 +574,8 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.receiveModeButton.setEnabled(plugin.is_setup)
             self.runButton.setEnabled(plugin.is_setup)
             self.streams_add_button.setEnabled(plugin.is_setup)
+            self.commit_web_view.setEnabled(plugin.active_commit is not None)
+            self.reportBtn.setEnabled(False)
             if plugin.is_setup is False: self.streams_remove_button.setEnabled(plugin.is_setup) 
             self.streamBranchDropdown.setEnabled(plugin.is_setup)
             self.layerSendModeDropdown.setEnabled(plugin.is_setup)
@@ -545,17 +624,50 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateActiveStreamBranchDropdown(self, plugin):
         if not self: return
         try:
+            #print("___ populateActiveStreamBranchDropdown___")
+            #print(plugin.active_branch)
             if plugin.active_stream is None: return
-            self.streamBranchDropdown.clear()
+            active_branch = copy(plugin.active_branch)
+            active_commit = copy(plugin.active_commit)
+            keep_branch = True # case of search by URL 
+            if active_branch is None or active_commit is None: # case of populating from Saved Streams 
+                keep_branch = False
+            #print(active_branch)
+
+            #print(1)
+            self.streamBranchDropdown.clear() # activates "populate commit"
+            #print(2)
             if isinstance(plugin.active_stream[1], SpeckleException): 
                 logToUser("Some streams cannot be accessed", level = 1, plugin = self)
                 return
             elif plugin.active_stream is None or plugin.active_stream[1] is None or plugin.active_stream[1].branches is None:
                 return
+            #print(3)
+            #print(plugin.active_branch)
+
+            # here the commit dropdown is triggered 
             self.streamBranchDropdown.addItems(
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
+            #print(4)
             self.streamBranchDropdown.addItems(["Create New Branch"])
+            #print(5)
+            if keep_branch is True:
+                plugin.active_branch = active_branch
+                plugin.active_commit = active_commit
+            #print(plugin.active_branch)
+
+            # set index to current (if added from URL) 
+            if plugin.active_branch is not None and plugin.active_branch in plugin.active_stream[1].branches.items:
+                #print("__________SET BRANCH TEXT")
+                #print(plugin.active_branch.name)
+                if keep_branch is True:
+                    plugin.active_branch = active_branch
+                    plugin.active_commit = active_commit
+                #print(plugin.active_branch.name)
+                self.streamBranchDropdown.setCurrentText(plugin.active_branch.name) # activates "populate commit"
+                #print(6)
+            
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             return
@@ -563,15 +675,23 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def populateActiveCommitDropdown(self, plugin):
         if not self: return
         try:
-            self.commitDropdown.clear()
-            if plugin.active_stream is None: return
+            #print("________populateActiveCommitDropdown")
+            #print(plugin.active_commit)
+            if plugin.active_stream is None: 
+                print("Active stream is None")
+                return
             branchName = self.streamBranchDropdown.currentText()
+            #print(f"CURRENT BRANCH TEXT: {branchName}")
             if branchName == "": return
             if branchName == "Create New Branch": 
                 self.streamBranchDropdown.setCurrentText("main")
                 plugin.onBranchCreateClicked()
                 return
             branch = None
+            
+            #print("__clear commit dropdwn")
+            #print(plugin.active_commit)
+            self.commitDropdown.clear()
             if isinstance(plugin.active_stream[1], SpeckleException): 
                 logToUser("Some streams cannot be accessed", level = 1, plugin = self)
                 return
@@ -579,15 +699,42 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 for b in plugin.active_stream[1].branches.items:
                     if b.name == branchName:
                         branch = b
+                        plugin.active_branch = b
                         break
             
-            self.commitDropdown.addItem("Latest commit from this branch")
+            if len(branch.commits.items)>0:
+                commits = []
+                commits.append("")
+                #commits.append("Latest commit from this branch")
+                #self.commitDropdown.addItem("Latest commit from this branch")
+            
+                #commits = []
+                for commit in branch.commits.items:
+                    sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
+                    commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
+                self.commitDropdown.addItems(commits)
 
-            commits = []
-            for commit in branch.commits.items:
-                sourceApp = str(commit.sourceApplication).replace(" ","").split(".")[0].split("-")[0]
-                commits.append(f"{commit.id}"+ " | " + f"{sourceApp}" + " | " + f"{commit.message}")
-            self.commitDropdown.addItems(commits)
+                # set index to current (if added from URL) 
+                if plugin.active_commit is not None and plugin.active_commit in branch.commits.items:
+                    #print("set index to current (if added from URL) ")
+                    #print(plugin.active_commit)
+                    self.commitDropdown.setCurrentText(f"{plugin.active_commit.id}"+ " | " + f"{plugin.active_commit.sourceApplication}" + " | " + f"{plugin.active_commit.message}")
+                else: #overwrite active commit if plugin.active_commit is None:
+                    #print("set index to 1st")
+                    plugin.active_commit = branch.commits.items[0]
+            else: 
+                plugin.active_commit = None
+            
+            self.commitDropdown.setItemText(0, "Latest commit from this branch")
+            # enable or disable web view button 
+            #print("_________ENABLE OR DISABLE")
+            #print(plugin.active_commit)
+            #print(f"CURRENT TEXT2: {self.streamBranchDropdown.currentText()}")
+            if plugin.active_commit is not None and plugin.btnAction == 1: 
+                self.commit_web_view.setEnabled(True)
+            else: 
+                self.commit_web_view.setEnabled(False)
+
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
             #print(str(e) + "::" + str(inspect.stack()[0][3]))
@@ -596,3 +743,5 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
     def onStreamRemoveButtonClicked(self, plugin):
         return 
 
+    def cancelOperations(self):
+        return 

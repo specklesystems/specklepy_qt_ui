@@ -138,6 +138,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         # add widgets that will only show on event trigger 
         logWidget = LogWidget(parent=self)
         logWidget.dataStorage = self.dataStorage
+
         self.layout().addWidget(logWidget)
         self.msgLog = logWidget 
         self.msgLog.dockwidget = self 
@@ -736,7 +737,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
         except Exception as e:
             logToUser(e, level = 2, func = inspect.stack()[0][3], plugin=self)
-            print(str(e) + "::" + str(inspect.stack()[0][3]))
+            #print(str(e) + "::" + str(inspect.stack()[0][3]))
             return
 
     def onStreamRemoveButtonClicked(self, plugin):

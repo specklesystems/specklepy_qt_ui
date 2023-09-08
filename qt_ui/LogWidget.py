@@ -18,6 +18,7 @@ from specklepy_qt_ui.qt_ui.widget_report import ReportDialog
 
 class LogWidget(QWidget):
     
+    dataStorage = None
     msgs: List[str] = []
     used_btns: List[int] = []
     btns: List[QPushButton]
@@ -92,6 +93,7 @@ class LogWidget(QWidget):
         url: str  = obj["url"]
         blue: bool = obj["blue"]
         report: bool = obj["report"]
+
 
         self.setGeometry(0, 0, self.parentWidget.frameSize().width(), self.parentWidget.frameSize().height())
         

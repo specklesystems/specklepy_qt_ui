@@ -309,6 +309,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
         import webbrowser
         url = "https://speckle.systems/"
         webbrowser.open(url, new=0, autoraise=True)
+        
+        try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Logo Click", "connector_version": str(self.dataStorage.plugin_version)})
+        except Exception as e: print(e) 
+                    
 
     def refreshClicked(self, plugin):
         try:

@@ -61,7 +61,6 @@ class LogWidget(QWidget):
             button = QPushButton(f"👌 Error") # to '{streamName}' Sent , v
             #button.setStyleSheet("QPushButton {color: black; border: 0px;border-radius: 17px;padding: 20px;height: 40px;text-align: left;"+ f"{BACKGR_COLOR_GREY}" + "}")
             button.clicked.connect(lambda: self.btnClicked())
-            #button.clicked.connect(lambda: self.hide())
             self.btns.append(button)
 
     # overriding the mouseReleaseEvent method
@@ -124,11 +123,12 @@ class LogWidget(QWidget):
         if report is True: 
             # color report btn 
             reportList = self.dataStorage.latestActionReport
-            for item in reportList:
-                if item["errors"] != "":
-                    reportBtn.setText("⚠️ Report")
-                    #reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{BACKGR_ERROR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_ERROR_COLOR_LIGHT}" + " }")
-                    break 
+            if reportList is not None: 
+                for item in reportList:
+                    if item["errors"] != "":
+                        reportBtn.setText("⚠️ Report")
+                        #reportBtn.setStyleSheet("QPushButton {color: white; border-radius: 17px;padding:0px;padding-left: 10px;padding-right: 10px;text-align: center;"+ f"{BACKGR_ERROR_COLOR}" + "} QPushButton:hover { "+ f"{BACKGR_ERROR_COLOR_LIGHT}" + " }")
+                        break 
 
             boxLayout.addWidget(reportBtn)
             boxLayout.addWidget(spacer)
@@ -179,6 +179,11 @@ class LogWidget(QWidget):
                 if url.startswith("http"): 
                     self.openURL(url) 
                 elif url.startswith("cancel"):
+                    
+                    try: metrics.track("Connector Action", self.dataStorage.active_account, {"name": "Cancel Operation", "connector_version": str(self.dataStorage.plugin_version)})
+                    except Exception as e: print(e) 
+                    self.hide()
+                    
                     self.parentWidget.cancelOperations()
 
         except Exception as e: 

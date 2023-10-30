@@ -67,7 +67,7 @@ To do it manually, you can run 2 following commands from QGIS Plugins panel->Pyt
             )
         else:
             self.report_widget.setText(
-                f"Something went wrong. Here are the error logs: \n\n{res1.stdout}\n\n{res2.stdout}"
+                f"Something went wrong. Here are the error logs: \n\n{res1}\n\n{res2}"
             )
 
     def runSubprocess(self):

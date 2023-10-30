@@ -28,7 +28,7 @@ class DependenciesUpgradeDialog(QtWidgets.QWidget, FORM_CLASS):
     def runAllSetup(self):
         self.setWindowTitle("Upgrade Python dependencies (Speckle)")
         self.setMinimumWidth(900)
-        self.setMinimumHeight(400)
+        self.setMinimumHeight(600)
         self.report_label.setWordWrap(True)
         self.btn_cancel.clicked.connect(self.onOkClicked)
         self.btn_upgrade.clicked.connect(self.upgradeDependencies)

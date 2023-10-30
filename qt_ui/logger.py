@@ -8,9 +8,11 @@ def logToUser(
     msg: str, func=None, level: int = 2, plugin=None, url="", blue=False, report=False
 ):
     msg = str(msg)
-    dockwidget = plugin    
+    dockwidget = plugin
     try:
-        if url == "" and blue is False:  # only for info messages
+        if (
+            url == "" and blue is False
+        ) or level == 2:  # only for info messages or anything with error
             msg = addLevelSymbol(msg, level)
             if func is not None:
                 msg += "::" + str(func)

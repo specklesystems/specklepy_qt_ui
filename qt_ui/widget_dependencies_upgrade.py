@@ -2,6 +2,7 @@ import os
 import urllib3
 import requests
 import requests_toolbelt
+from specklepy.logging import metrics
 
 from PyQt5 import QtWidgets, uic, QtCore
 
@@ -57,6 +58,18 @@ To do it manually, you can run 2 following commands from QGIS Plugins panel->Pyt
         self.close()
 
     def upgradeDependencies(self):
+        try:
+            metrics.track(
+                "Connector Action",
+                self.dataStorage.active_account,
+                {
+                    "name": "Resolve dependencies",
+                    "connector_version": str(self.dataStorage.plugin_version),
+                },
+            )
+        except Exception as e:
+            print(e)
+
         self.report_widget.setText("It might take a moment...")
         self.btn_upgrade.setEnabled(False)
         res1, res2, res3 = self.runSubprocess()

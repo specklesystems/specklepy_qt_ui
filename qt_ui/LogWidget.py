@@ -241,6 +241,7 @@ class LogWidget(QWidget):
                     except Exception as e:
                         print(e)
                     self.dependenciesDialog = DependenciesUpgradeDialog()
+                    self.dependenciesDialog.dataStorage = self.dataStorage
                     self.dependenciesDialog.show()
 
                 elif url.startswith("cancel"):

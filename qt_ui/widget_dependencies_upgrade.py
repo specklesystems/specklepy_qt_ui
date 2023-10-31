@@ -3,6 +3,7 @@ import urllib3
 import requests
 import requests_toolbelt
 from specklepy.logging import metrics
+from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 
 from PyQt5 import QtWidgets, uic, QtCore
 
@@ -18,6 +19,7 @@ class DependenciesUpgradeDialog(QtWidgets.QWidget, FORM_CLASS):
     btn_cancel: QtWidgets.QPushButton = None
     btn_upgrade: QtWidgets.QPushButton = None
     report_text: str = ""
+    dataStorage: DataStorage = None
 
     def __init__(self, parent=None):
         super(DependenciesUpgradeDialog, self).__init__(

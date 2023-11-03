@@ -31,7 +31,6 @@ class LogWidget(QWidget):
     btns: List[QPushButton]
     max_msg: int
     sendMessage = pyqtSignal(object)
-    dataStorage = None
     reportBtn = None
 
     active_account: Account

@@ -1,3 +1,4 @@
+from datetime import datetime
 import inspect
 from typing import List, Optional, Tuple, Union, Any
 import webbrowser
@@ -43,6 +44,8 @@ class DataStorage:
     latestActionReport: Optional[list] = None
     latestActionFeaturesReport: Optional[list] = None
     latestActionTime: str = ""
+    latestTransferTime: datetime = None
+    latestConversionTime: datetime = None
     latestActionLayers: Optional[list] = None
     latestActionUnits: str = ""
 

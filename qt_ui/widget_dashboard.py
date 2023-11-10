@@ -68,6 +68,7 @@ class SpeckleDashboard(QtWidgets.QDockWidget, FORM_CLASS):
             if self.current_filter in key or key in self.current_filter:
                 listItem = QListWidgetItem(f"{key}: {val}")
                 self.dataWidget.addItem(listItem)
+        # self.dataWidget.setMaximumHeight(50)
 
     def populateUI(self, force=0):
         print(self.selectionDropdown.currentIndex())
@@ -151,6 +152,7 @@ class SpeckleDashboard(QtWidgets.QDockWidget, FORM_CLASS):
 
     def createChart(self):
         # https://stackoverflow.com/questions/60522103/how-to-have-plotly-graph-as-pyqt5-widget
+        r"""
         print("PRINT DATAFRAME")
         df = pd.DataFrame.from_dict(self.dataNumeric, orient="index", columns=["value"])
         df2 = df.reset_index()
@@ -192,15 +194,19 @@ class SpeckleDashboard(QtWidgets.QDockWidget, FORM_CLASS):
         #    for i in reversed(range(self.chart.layout.count())):
         #        self.chart.layout.itemAt(i).widget().setParent(None)
         # except: pass
+        """
+        fig = self.assembleFigure()
 
         if self.existing_web == 0:
             self.browser = QWebView(self)
 
-        self.browser.setHtml(fig.to_html(include_plotlyjs="cdn"))
+        self.browser.setHtml(
+            fig.to_html(include_plotlyjs="cdn", config={"displayModeBar": False})
+        )
         # self.browser.setUrl(QUrl("https://speckle.xyz/streams/e2effcfa27/commits/f76cedd9a6"))
 
         self.chart.layout = QHBoxLayout(self.chart)
-        self.browser.setMaximumHeight(400)
+        # self.browser.setMaximumHeight(400)
 
         if self.existing_web == 0:
             self.chart.layout.addWidget(self.browser)
@@ -229,3 +235,82 @@ class SpeckleDashboard(QtWidgets.QDockWidget, FORM_CLASS):
 
         # set the QWebEngineView instance as main widget
         # self.setCentralWidget(plot_widget)
+
+    def assembleFigure(self):
+        import plotly
+        from plotly.subplots import make_subplots
+
+        cols = 1
+        rows = 2  # len(TOTAL_SERVER_LIST) #math.ceil(len(TOTAL_SERVER_LIST)/cols)
+        # specs_col = [{"type": "bar"}, {"type": "sunburst"}]
+        specs = [[{"type": "sunburst"}], [{"type": "bar"}]]
+        # specs = [  specs_col for r in range(rows)]
+        # df = pd.DataFrame(columns=['Country', '', 'count'])
+        # for i in range(5): df = df.append({'Name' : 'Ankit', 'Articles' : 97, 'Improved' : 2200},ignore_index = True)
+        fig = make_subplots(rows=rows, cols=cols, specs=specs)
+
+        # dataframe
+        df = pd.DataFrame.from_dict(self.dataNumeric, orient="index", columns=["value"])
+        df = df.reset_index()
+        print(df)
+
+        # plot - pie chart
+        # df2 = df2.loc["area" in df2["index"]]
+        property_filter = "area"
+        df2 = df[df["index"].str.lower().str.contains(property_filter)].copy()
+        fig2 = px.pie(
+            df2,
+            values="value",
+            names="index",
+            title="Land use distribution",
+            hole=0.5,
+        )
+        fig.add_trace(fig2.data[0], row=1, col=1)
+
+        # plot - histogram
+        property_filter = "value"
+        # df2 = df[df["index"].str.lower().str.contains(property_filter)].copy()
+        all_column_vals = df[df["index"].str.lower().str.contains(property_filter)][
+            "value"
+        ].to_list()
+        all_column_vals_separated = []
+        [
+            all_column_vals_separated.extend(x)
+            for x in all_column_vals
+            if isinstance(x, list)
+        ]
+
+        all_vals = [float(x) for x in all_column_vals_separated]
+        df2 = pd.DataFrame([{property_filter: val} for val in all_vals])
+        print(df2)
+        fig2 = px.histogram(df2, x=property_filter, title="Property values")
+        fig.add_trace(fig2.data[0], row=2, col=1)
+
+        # plot - sunburst
+        # fig2 = px.sunburst(
+        #    df2,
+        #    path=["server_id", "isWebhook", "isMultiplayer"],
+        #    color="isMultiplayer",
+        #    values="count",
+        #    color_discrete_map={True: "blue", False: "red"},
+        # )
+        # fig.add_trace(fig2.data[0], row=2, col=1)
+
+        fig.update_layout(
+            title="Some title",
+        )
+
+        width = 300
+        fig.update_layout(
+            autosize=False,
+            width=width,
+            height=width / cols * rows,
+        )
+
+        return fig
+        # fig.update_yaxes(range = [0, 30], col=1) #, title_text=f"Total receives: {total_receives} by {people} people")
+        # fig.update_xaxes(range = [0, 31*4], col=1)
+
+        # fig.show()
+
+        # plotly.offline.plot(fig, filename='Graphs/stats_perServer_pie.html')

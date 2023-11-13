@@ -1,4 +1,5 @@
 from textwrap import wrap
+import requests
 
 
 def splitTextIntoLines(text: str = "", number: int = 40) -> str:
@@ -56,18 +57,18 @@ def constructCommitURL(
 
 
 def constructCommitURLfromServerCommit(serverURL: str, stream_id: str) -> str:
-    import requests
-
     r = requests.get(serverURL)
 
     # check for frontend2
+    # only check the url string
     try:
         header = r.headers["x-speckle-frontend-2"]
-        # url = streamUrl.replace("streams", "projects") + "/models/" + branch_id + "@" + commit_id
         url = (
-            serverURL + "/projects/" + stream_id
-        )  # replace with 'projects' after it's implemented in Specklepy
-    except:
+            serverURL
+            + "/projects/"
+            + stream_id  # + "/models/" + branch_id + "@" + commit_id
+        )
+    except KeyError:
         url = serverURL + "/streams/" + stream_id
     return url
 

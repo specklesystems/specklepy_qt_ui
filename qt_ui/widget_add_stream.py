@@ -117,61 +117,33 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             streams = []
             branch = None
             commit = None
-            # print("_____ onSearchClicked___")
             if "http" in query and len(query.split("/")) >= 3:  # URL
-                sw = StreamWrapper(query)
+                sw = StreamWrapper(
+                    query,
+                )
                 stream = sw.get_client().stream.get(
                     id=sw.stream_id, branch_limit=100, commit_limit=100
                 )
                 if isinstance(stream, Stream):
                     streams = [stream]
 
-                    if "/branches/" in query:
-                        # print("branches")
-                        branch_name = (
-                            query.split("/branches/")[
-                                len(query.split("/branches/")) - 1
-                            ]
-                            .split("/")[0]
-                            .split("?")[0]
-                            .split("&")[0]
-                            .split("@")[0]
-                        )
-                        # print(branch_name)
-                        # print(stream)
-                        # print(len(stream.branches.items))
+                    if sw.type == "branch":
+                        branch_name = sw.branch_name
                         for br in stream.branches.items:
                             name = urllib.parse.quote(br.name)
-                            # print(name)
                             if name == branch_name:
                                 branch = br
                                 break
-                    elif "/commits/" in query:
-                        # print("commits")
-                        commit_id = (
-                            query.split("/commits/")[len(query.split("/commits/")) - 1]
-                            .split("/")[0]
-                            .split("?")[0]
-                            .split("&")[0]
-                            .split("@")[0]
-                        )
+                    if sw.type == "commit":
+                        commit_id = sw.commit_id
                         for br in stream.branches.items:
                             for com in br.commits.items:
                                 if com.id == commit_id:
                                     branch = br
                                     commit = com
-                                    # print(branch)
-                                    # print(commit)
                                     break
                 elif isinstance(stream, Exception):
                     print(stream)
-                # if "/commits/" in query:
-                #    branch_id = query.split("/commits/")[len(query.split("/commits/"))-1].split("/")[0].split("?")[0].split("&")[0].split("@")[0]
-                #    for com in stream.
-                #        if br.id == branch_id:
-                #            branch = br
-                #            break
-
                 try:
                     metrics.track(
                         "Connector Action",
@@ -260,13 +232,12 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             else:
                 try:
                     index = self.search_results_list.currentIndex().row()
-                    stream = self.stream_results[index]
+                    # stream = self.stream_results[index]
                     item = self.search_results_list.item(index)
                     url = constructCommitURLfromServerCommit(
                         item.text().split(" | ")[1],
                         item.text().split(", ")[1].split(" | ")[0],
                     )
-                    # url = item.text().split(" | ")[1] + "/streams/" + item.text().split(", ")[1].split(" | ")[0]
                     sw = StreamWrapper(url)
 
                     try:
@@ -294,9 +265,11 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         level=1,
                         func=inspect.stack()[0][3],
                     )
+                    print(e)
                     return
         except Exception as e:
             logToUser(e, level=2, func=inspect.stack()[0][3])
+            print(e)
             return
 
     def onCancelClicked(self):

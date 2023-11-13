@@ -238,9 +238,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         item.text().split(" | ")[1],
                         item.text().split(", ")[1].split(" | ")[0],
                     )
-                    print(url)
                     sw = StreamWrapper(url)
-                    print(sw)
 
                     try:
                         metrics.track(

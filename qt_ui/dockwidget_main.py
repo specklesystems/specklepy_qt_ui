@@ -415,7 +415,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 logToUser(
                     e, level=2, func=inspect.stack()[0][3], plugin=plugin.dockwidget
                 )
-            
+
             plugin.reloadUI()
         except Exception as e:
             logToUser(e, level=2, func=inspect.stack()[0][3], plugin=self)
@@ -774,9 +774,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             active_branch = copy(plugin.active_branch)
             active_commit = copy(plugin.active_commit)
             keep_branch = True  # case of search by URL
-            if (
-                active_branch is None or active_commit is None
-            ):  # case of populating from Saved Streams
+            if active_branch is None:  # case of populating from Saved Streams
                 keep_branch = False
             # print(active_branch)
 
@@ -804,7 +802,12 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print(5)
             if keep_branch is True:
                 plugin.active_branch = active_branch
-                plugin.active_commit = active_commit
+                if active_commit is not None:
+                    plugin.active_commit = active_commit
+                elif len(plugin.active_branch.commits.items)>0:
+                    plugin.active_commit = plugin.active_branch.commits.items[0]
+                #else:
+                #    plugin.active_commit = plugin.active_branch.commits.items[0]
             # print(plugin.active_branch)
 
             # set index to current (if added from URL)

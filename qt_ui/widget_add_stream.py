@@ -131,7 +131,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         branch_name = sw.branch_name
                         for br in stream.branches.items:
                             name = urllib.parse.quote(br.name)
-                            if name == branch_name:
+                            if br.name == branch_name:
                                 branch = br
                                 break
                     if sw.type == "commit":

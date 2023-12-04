@@ -91,23 +91,17 @@ To do it manually, you can run 2 following commands from QGIS Plugins panel->Pyt
 
         result1 = subprocess.run(
             [path(), "-m", "pip", "install", "requests==2.31.0"],
-            shell=True,
             timeout=1000,
             capture_output=True,
-            text=True,
         )
         result2 = subprocess.run(
             [path(), "-m", "pip", "install", "urllib3==1.26.16"],
-            shell=True,
             timeout=1000,
             capture_output=True,
-            text=True,
         )
         result3 = subprocess.run(
             [path(), "-m", "pip", "install", "requests_toolbelt==0.10.1"],
-            shell=True,
             timeout=1000,
             capture_output=True,
-            text=True,
         )
         return result1, result2, result3

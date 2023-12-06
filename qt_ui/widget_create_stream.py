@@ -1,7 +1,11 @@
 import inspect
 import os
 from typing import List, Tuple, Union
-from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+
+try:
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal

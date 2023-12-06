@@ -1,8 +1,15 @@
 import inspect
 import os
 from typing import List, Tuple, Union
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+
+try:
+    from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QCheckBox, QListWidgetItem, QHBoxLayout, QWidget
@@ -10,7 +17,6 @@ from PyQt5.QtCore import pyqtSignal
 
 from specklepy.core.api.client import SpeckleClient
 
-from specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(

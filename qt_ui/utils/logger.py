@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtCore
 
-from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
-
+try:
+    from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
 
 def logToUser(
     msg: str, func=None, level: int = 2, plugin=None, url="", blue=False, report=False

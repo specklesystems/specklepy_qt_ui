@@ -50,14 +50,24 @@ except:
 
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
-from specklepy_qt_ui.qt_ui.global_resources import (
+try:
+    from specklepy_qt_ui.qt_ui.global_resources import (
     COLOR_HIGHLIGHT, 
     SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
     ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
     ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
     ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
     COLOR, BACKGR_COLOR, BACKGR_COLOR_LIGHT,
-)
+    )
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.global_resources import (
+    COLOR_HIGHLIGHT, 
+    SPECKLE_COLOR, SPECKLE_COLOR_LIGHT, 
+    ICON_LOGO, ICON_SEARCH, ICON_DELETE, ICON_DELETE_BLUE,
+    ICON_SEND, ICON_RECEIVE, ICON_SEND_BLACK, ICON_RECEIVE_BLACK, 
+    ICON_SEND_BLUE, ICON_RECEIVE_BLUE, 
+    COLOR, BACKGR_COLOR, BACKGR_COLOR_LIGHT,
+    )
 
 ui_class = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), os.path.join("ui", "mainWindow.ui") )
@@ -416,7 +426,7 @@ class SpeckleGISDialog(QMainWindow):
         try: 
             from speckle.ui.project_vars import set_project_layer_selection
         except: 
-            from speckle_toolbox.esri.toolboxes.speckle.ui.project_vars import set_project_layer_selection
+            from speckle_toolbox.esri.toolboxes.speckle.speckle.ui.project_vars import set_project_layer_selection
         
         try:
             self.layersWidget.clear()
@@ -518,7 +528,7 @@ class SpeckleGISDialog(QMainWindow):
         try:   
             from speckle.ui.project_vars import set_project_streams
         except: 
-            from speckle_toolbox.esri.toolboxes.speckle.ui.project_vars import set_project_streams
+            from speckle_toolbox.esri.toolboxes.speckle.speckle.ui.project_vars import set_project_streams
         
         try:
             if not self: return

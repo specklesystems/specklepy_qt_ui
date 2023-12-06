@@ -9,19 +9,34 @@ import webbrowser
 from specklepy.logging import metrics
 from specklepy.core.api.credentials import Account
 
-from specklepy_qt_ui.qt_ui.utils.global_resources import (
-    BACKGR_COLOR,
-    BACKGR_COLOR_LIGHT,
-    BACKGR_COLOR_GREY,
-    BACKGR_COLOR_TRANSPARENT,
-    BACKGR_COLOR_HIGHLIGHT,
-    NEW_GREY,
-    NEW_GREY_HIGHLIGHT,
-    BACKGR_ERROR_COLOR,
-    BACKGR_ERROR_COLOR_LIGHT,
-)
-from specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import DependenciesUpgradeDialog
-from specklepy_qt_ui.qt_ui.widget_report import ReportDialog
+try:
+    from specklepy_qt_ui.qt_ui.utils.global_resources import (
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        BACKGR_COLOR_GREY,
+        BACKGR_COLOR_TRANSPARENT,
+        BACKGR_COLOR_HIGHLIGHT,
+        NEW_GREY,
+        NEW_GREY_HIGHLIGHT,
+        BACKGR_ERROR_COLOR,
+        BACKGR_ERROR_COLOR_LIGHT,
+    )
+    from specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import DependenciesUpgradeDialog
+    from specklepy_qt_ui.qt_ui.widget_report import ReportDialog
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import (
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        BACKGR_COLOR_GREY,
+        BACKGR_COLOR_TRANSPARENT,
+        BACKGR_COLOR_HIGHLIGHT,
+        NEW_GREY,
+        NEW_GREY_HIGHLIGHT,
+        BACKGR_ERROR_COLOR,
+        BACKGR_ERROR_COLOR_LIGHT,
+    )
+    from speckle.specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import DependenciesUpgradeDialog
+    from speckle.specklepy_qt_ui.qt_ui.widget_report import ReportDialog
 
 
 class LogWidget(QWidget):

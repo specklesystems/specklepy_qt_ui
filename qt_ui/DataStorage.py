@@ -3,7 +3,11 @@ import inspect
 from typing import List, Optional, Tuple, Union, Any
 import webbrowser
 
-from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+try:
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+
 from specklepy.core.api.credentials import get_local_accounts
 
 

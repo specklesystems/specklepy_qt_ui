@@ -8,7 +8,7 @@ try:
     from specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
     from specklepy_qt_ui.qt_ui.LogWidget import LogWidget
     from specklepy_qt_ui.qt_ui.utils.logger import logToUser
-    from specklepy_qt_ui.qt_ui.utils import constructCommitURL
+    from specklepy_qt_ui.qt_ui.utils.utils import constructCommitURL
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from specklepy_qt_ui.qt_ui.utils.global_resources import (
         COLOR_HIGHLIGHT,
@@ -40,7 +40,7 @@ except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
     from speckle.specklepy_qt_ui.qt_ui.LogWidget import LogWidget
     from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
-    from speckle.specklepy_qt_ui.qt_ui.utils import constructCommitURL
+    from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURL
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import (
         COLOR_HIGHLIGHT,

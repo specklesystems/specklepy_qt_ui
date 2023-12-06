@@ -4,7 +4,7 @@ from typing import List, Union
 import urllib.parse
 
 from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.qt_ui.logger import logToUser
+from specklepy_qt_ui.qt_ui.utils.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal

@@ -1,6 +1,3 @@
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import QtCore
-
 from specklepy_qt_ui.qt_ui.utils import splitTextIntoLines
 
 
@@ -55,6 +52,9 @@ def displayUserMsg(msg: str, func=None, level: int = 2):
 
 def createWindow(msg_old: str, func=None, level: int = 2):
     # print("Create window")
+    from PyQt5.QtWidgets import QMessageBox
+    from PyQt5 import QtCore
+
     window = None
     try:
         # https://www.techwithtim.net/tutorials/pyqt5-tutorial/messageboxes/

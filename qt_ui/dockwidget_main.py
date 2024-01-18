@@ -346,11 +346,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print("setupOnFirstLoad")
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
-            # print("before")
-            # print(self.reportBtn)
-            # print(self.msgLog)
             self.reportBtn.clicked.connect(self.msgLog.showReport)
-            # print("after")
 
             self.streams_add_button.clicked.connect(plugin.onStreamAddButtonClicked)
             self.commit_web_view.clicked.connect(

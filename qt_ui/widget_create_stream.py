@@ -41,7 +41,7 @@ class CreateStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
         )
         self.speckle_client = speckle_client
         self.setupUi(self)
-        self.setWindowTitle("Create New Stream")
+        self.setWindowTitle("Create New Project")
 
         self.name_field.textChanged.connect(self.nameCheck)
         self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True)

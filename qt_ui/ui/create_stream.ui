@@ -34,7 +34,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="name_label">
          <property name="text">
-          <string>Stream Name</string>
+          <string>Project Name</string>
          </property>
         </widget>
        </item>

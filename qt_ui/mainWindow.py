@@ -4,6 +4,7 @@ import sys
 from typing import List
 
 # from speckle.speckle.converter.layers import getLayers
+# from speckle.converter.layers import getLayers
 
 # import ui.speckle_qgis_dialog
 
@@ -84,8 +85,8 @@ ui_file_path = os.path.join(
 )
 
 
-class SpeckleGISDialog(QMainWindow):
 
+class SpeckleGISDialog(QMainWindow):
     on_top: bool = False
     pin_label: QtWidgets.QPushButton
     closingPlugin = pyqtSignal()
@@ -675,7 +676,6 @@ class SpeckleGISDialog(QMainWindow):
                     self.runButton.setEnabled(True)  # by manual selection
             elif self.layerSendModeDropdown.currentIndex() == 1:
                 self.runBtnStatusChanged(plugin)  # by saved
-
         except Exception as e:
             logToUser(str(e), level=2, func=inspect.stack()[0][3], plugin=self)
 

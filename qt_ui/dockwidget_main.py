@@ -809,7 +809,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.streamBranchDropdown.clear()  # activates "populate commit"
             # print(2)
             if isinstance(plugin.active_stream[1], SpeckleException):
-                logToUser("Some streams cannot be accessed", level=1, plugin=self)
+                logToUser("Some Projects cannot be accessed", level=1, plugin=self)
                 return
             elif (
                 plugin.active_stream is None
@@ -825,7 +825,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
             # print(4)
-            self.streamBranchDropdown.addItems(["Create New Branch"])
+            self.streamBranchDropdown.addItems(["Create New Model"])
             # print(5)
             if keep_branch is True:
                 plugin.active_branch = active_branch
@@ -864,13 +864,13 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print("________populateActiveCommitDropdown")
             # print(plugin.active_commit)
             if plugin.active_stream is None:
-                print("Active stream is None")
+                print("Active project is None")
                 return
             branchName = self.streamBranchDropdown.currentText()
             # print(f"CURRENT BRANCH TEXT: {branchName}")
             if branchName == "":
                 return
-            if branchName == "Create New Branch":
+            if branchName == "Create New Model":
                 self.streamBranchDropdown.setCurrentText("main")
                 plugin.onBranchCreateClicked()
                 return
@@ -880,7 +880,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print(plugin.active_commit)
             self.commitDropdown.clear()
             if isinstance(plugin.active_stream[1], SpeckleException):
-                logToUser("Some streams cannot be accessed", level=1, plugin=self)
+                logToUser("Some Projects cannot be accessed", level=1, plugin=self)
                 return
             elif plugin.active_stream[1]:
                 for b in plugin.active_stream[1].branches.items:
@@ -932,7 +932,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             else:
                 plugin.active_commit = None
 
-            self.commitDropdown.setItemText(0, "Latest commit from this branch")
+            self.commitDropdown.setItemText(0, "Latest version of this model")
             # enable or disable web view button
             # print("_________ENABLE OR DISABLE")
             # print(plugin.active_commit)

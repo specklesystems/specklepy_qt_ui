@@ -43,7 +43,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="streamListLabel">
           <property name="text">
-           <string>Project</string>
+           <string>Stream</string>
           </property>
          </widget>
         </item>
@@ -83,7 +83,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="streamBranchLabel">
           <property name="text">
-           <string>Model</string>
+           <string>Branch</string>
           </property>
          </widget>
         </item>
@@ -93,7 +93,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="commitLabel">
           <property name="text">
-           <string>Version</string>
+           <string>Commit</string>
           </property>
          </widget>
         </item>

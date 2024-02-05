@@ -380,11 +380,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print("setupOnFirstLoad")
             self.msgLog.sendMessage.connect(self.addMsg)
             self.setMapping.clicked.connect(self.showMappingDialog)
-            # print("before")
-            # print(self.reportBtn)
-            # print(self.msgLog)
             self.reportBtn.clicked.connect(self.msgLog.showReport)
-            # print("after")
 
             self.streams_add_button.clicked.connect(plugin.onStreamAddButtonClicked)
             self.commit_web_view.clicked.connect(
@@ -695,9 +691,6 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
 
     def fillLayerList(self, layer, layerType="generic"):
         try:
-            icon_xxl = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "assets", " size-xxl.png"
-            )
             listItem = QListWidgetItem(layer.name())
 
             try:  # if QGIS
@@ -707,10 +700,10 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                     isinstance(layer, QgsRasterLayer)
                     and layer.width() * layer.height() > 1000000
                 ):
-                    listItem.setIcon(QIcon(icon_xxl))
+                    listItem.setIcon(QIcon(ICON_XXL))
 
                 elif isinstance(layer, QgsVectorLayer) and layer.featureCount() > 20000:
-                    listItem.setIcon(QIcon(icon_xxl))
+                    listItem.setIcon(QIcon(ICON_XXL))
                 else:
                     from qgis.core import QgsIconUtils
 
@@ -838,9 +831,9 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 plugin.active_branch = active_branch
                 if active_commit is not None:
                     plugin.active_commit = active_commit
-                elif len(plugin.active_branch.commits.items)>0:
+                elif len(plugin.active_branch.commits.items) > 0:
                     plugin.active_commit = plugin.active_branch.commits.items[0]
-                #else:
+                # else:
                 #    plugin.active_commit = plugin.active_branch.commits.items[0]
             # print(plugin.active_branch)
 

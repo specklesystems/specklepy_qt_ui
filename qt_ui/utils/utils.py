@@ -1,10 +1,9 @@
 from textwrap import wrap
+from typing import Union
 import requests
 
 
 def splitTextIntoLines(text: str = "", number: int = 40) -> str:
-    # print("__splitTextIntoLines")
-    # print(text)
     msg = ""
     try:
         if len(text) > number:
@@ -28,8 +27,10 @@ def splitTextIntoLines(text: str = "", number: int = 40) -> str:
 
 
 def constructCommitURL(
-    streamWrapper, branch_id: str = None, commit_id: str = None
-) -> str:
+    streamWrapper,
+    branch_id: Union[str, None] = None,
+    commit_id: Union[str, None] = None,
+) -> Union[str, None]:
     import requests
 
     try:
@@ -41,7 +42,7 @@ def constructCommitURL(
         url = streamUrl
         # check for frontend2
         try:
-            header = r.headers["x-speckle-frontend-2"]
+            header = r.headers["x-speckle-frontend-2"]  # will throw Exception in FE1
             url = (
                 streamUrl.replace("streams", "projects")
                 + "/models/"
@@ -53,7 +54,7 @@ def constructCommitURL(
             url = streamUrl.replace("projects", "streams") + "/commits/" + commit_id
         return url
     except:
-        pass
+        return None
 
 
 def constructCommitURLfromServerCommit(serverURL: str, stream_id: str) -> str:
@@ -71,8 +72,3 @@ def constructCommitURLfromServerCommit(serverURL: str, stream_id: str) -> str:
     except KeyError:
         url = serverURL + "/streams/" + stream_id
     return url
-
-
-# def removeSpecialCharacters(text: str) -> str:
-#    new_text = text.replace("[","_").replace("]","_").replace(" ","_").replace("-","_").replace("(","_").replace(")","_").replace(":","_").replace("\\","_").replace("/","_").replace("\"","_").replace("&","_").replace("@","_").replace("$","_").replace("%","_").replace("^","_")
-#    return new_text

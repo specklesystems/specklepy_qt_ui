@@ -1,10 +1,8 @@
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import QtCore
-
 try:
     from specklepy_qt_ui.qt_ui.utils.utils import splitTextIntoLines
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.utils.utils import splitTextIntoLines
+
 
 def logToUser(
     msg: str, func=None, level: int = 2, plugin=None, url="", blue=False, report=False
@@ -57,6 +55,9 @@ def displayUserMsg(msg: str, func=None, level: int = 2):
 
 def createWindow(msg_old: str, func=None, level: int = 2):
     # print("Create window")
+    from PyQt5.QtWidgets import QMessageBox
+    from PyQt5 import QtCore
+
     window = None
     try:
         # https://www.techwithtim.net/tutorials/pyqt5-tutorial/messageboxes/

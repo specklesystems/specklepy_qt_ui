@@ -1,6 +1,10 @@
 
 import os
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+
+try:
+    from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 
 from PyQt5 import QtWidgets, uic, QtCore
 

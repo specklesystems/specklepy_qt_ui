@@ -2,9 +2,14 @@ import inspect
 import os
 from typing import List, Union
 import urllib.parse
-
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.qt_ui.logger import logToUser
+try:
+    from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -16,7 +21,6 @@ from specklepy.core.api.credentials import get_local_accounts  # , StreamWrapper
 from specklepy.core.api.wrapper import StreamWrapper
 from specklepy.logging import metrics
 
-from specklepy_qt_ui.qt_ui.utils import constructCommitURLfromServerCommit
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SpeckleQArcGISDialog</class>
- <widget class="QMainWindow" name="SpeckleQArcGISDialog">
+ <class>SpeckleGISDialog</class>
+ <widget class="QMainWindow" name="SpeckleGISDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -98,9 +98,21 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="commitDropdown"/>
-        </item>
+          <layout class="QHBoxLayout" name="commitListButtons" stretch="20,1">
+            <item>
+              <widget class="QComboBox" name="commitDropdown"/>
+            </item>
         
+            <item>
+              <widget class="QPushButton" name="commit_web_view">
+                <property name="text">
+                <string> </string>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </item>
+
         <item row="4" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout">
          </layout>
@@ -126,6 +138,15 @@
             </property>
            </widget>
           </item>
+          
+          <item>
+            <widget class="QPushButton" name="reportBtn">
+              <property name="enabled">
+                <bool>true</bool>
+              </property>
+            </widget>
+          </item>
+
          </layout>
         </item>
 
@@ -178,21 +199,49 @@
                   <bool>true</bool>
                 </property>
                 <property name="text">
-                  <string>Set visible layers as selection</string>
+                  <string>Save current layer selection</string>
                 </property>
               </widget>
             </item>
           </layout>
         </item>
 
-        <item row="9" column="0">
+
+        <item row="10" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout"  stretch="1,1">
+            <item>
+            <spacer name="horizontalSpacer">
+              <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+              </property>
+            </spacer>
+            </item>
+
+            <item>
+              <widget class="QPushButton" name="crsSettings">
+                <property name="enabled">
+                  <bool>true</bool>
+                </property>
+                <property name="text">
+                  <string>Set project center on Send/Receive</string>
+                </property>
+              </widget>
+            </item>
+
+          </layout>
+        </item>
+
+        <item row="11" column="0">
          <widget class="QLabel" name="messageLabel">
           <property name="text">
            <string>Message</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="11" column="1">
          <widget class="QLineEdit" name="messageInput">
           <property name="placeholderText">
            <string>Sent XXX objects from ArcGIS</string>
@@ -202,7 +251,7 @@
 
         
 
-        <item row="10" column="1">
+        <item row="12" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
           <spacer name="horizontalSpacer">
@@ -236,46 +285,8 @@
 
          </layout>
         </item>
-
-        <item row="11" column="0">
-         <widget class="QLabel" name="surveyPointLabel">
-          <property name="text">
-           <string>Lat, Lon</string>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-              <widget class="QLineEdit" name="surveyPointLat">
-                <property name="placeholderText">
-                <string>0.0</string>
-                </property>
-              </widget>
-            </item>
-            <item>
-              <widget class="QLineEdit" name="surveyPointLon">
-                <property name="placeholderText">
-                <string>0.0</string>
-                </property>
-              </widget>
-            </item>
-
-            <item>
-              <widget class="QPushButton" name="saveSurveyPoint">
-                <property name="enabled">
-                  <bool>true</bool>
-                </property>
-                <property name="text">
-                  <string>Set as a project center</string>
-                </property>
-              </widget>
-            </item>
-
-          </layout>
-        </item>
         
-        <item row="12" column="1">
+        <item row="13" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout">
             
             <item>

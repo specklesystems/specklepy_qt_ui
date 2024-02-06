@@ -6,7 +6,7 @@ from specklepy.logging import metrics
 
 try:
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
 
 from PyQt5 import QtWidgets, uic, QtCore
@@ -91,7 +91,11 @@ To do it manually, you can run 2 following commands from QGIS Plugins panel->Pyt
 
     def runSubprocess(self):
         import subprocess
-        from speckle.utils.utils import get_qgis_python_path as path
+
+        try:
+            from speckle.utils.utils import get_qgis_python_path as path
+        except ModuleNotFoundError:
+            from speckle.speckle.utils.utils import get_qgis_python_path as path
 
         result1 = subprocess.run(
             [path(), "-m", "pip", "install", "requests==2.31.0"],

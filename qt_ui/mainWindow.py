@@ -273,7 +273,7 @@ class SpeckleGISDialog(QMainWindow):
             text_label.setIcon(exitActIcon)
             text_label.setIconSize(QtCore.QSize(300, 93))
             text_label.setMinimumSize(QtCore.QSize(100, 40))
-            text_label.setMaximumWidth(300)
+            text_label.setMaximumWidth(250)
 
             version = ""
             try:

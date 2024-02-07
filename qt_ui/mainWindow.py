@@ -617,7 +617,7 @@ class SpeckleGISDialog(QMainWindow):
                     self.runButton.setEnabled(False)
                 elif (
                     self.layerSendModeDropdown.currentIndex() == 1
-                    and len(plugin.dataStorage.current_layers) == 0
+                    and len(plugin.dataStorage.saved_layers) == 0
                 ):  # saved layers; but the list is empty
                     self.runButton.setEnabled(False)
                 else:
@@ -673,7 +673,7 @@ class SpeckleGISDialog(QMainWindow):
                 all_layers = getAllProjLayers(plugin)
                 if all_layers is None:
                     return
-                
+
                 all_layers_ids = [l.dataSource for l in all_layers]
                 for layer_tuple in plugin.dataStorage.saved_layers:
                     if layer_tuple[1].dataSource in all_layers_ids:

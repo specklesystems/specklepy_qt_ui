@@ -199,7 +199,7 @@
                   <bool>true</bool>
                 </property>
                 <property name="text">
-                  <string>Save current layer selection</string>
+                  <string>Save visible layers as selection</string>
                 </property>
               </widget>
             </item>

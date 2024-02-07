@@ -380,6 +380,7 @@ class SpeckleGISDialog(QMainWindow):
     def addMsg(self, obj: dict):
         try:
             self.msgLog.addButton(obj)
+            # last_btn, index = self.msgLog.getLastBtn()
         except Exception as e:
             logToUser(str(e), level=2, func=inspect.stack()[0][3], plugin=self)
 
@@ -665,15 +666,16 @@ class SpeckleGISDialog(QMainWindow):
         try:
             self.layersWidget.clear()
             nameDisplay = []
-            project = plugin.project
+            project = plugin.dataStorage.project
 
             if bySelection is False:  # read from project data
                 print("populate layers from saved data")
-                # print(project)
-                # print(project.activeMap)
-
-                all_layers_ids = [l.dataSource for l in getAllProjLayers(project)]
-                for layer_tuple in plugin.current_layers:
+                all_layers = getAllProjLayers(plugin)
+                if all_layers is None:
+                    return
+                
+                all_layers_ids = [l.dataSource for l in all_layers]
+                for layer_tuple in plugin.dataStorage.saved_layers:
                     if layer_tuple[1].dataSource in all_layers_ids:
                         listItem = self.fillLayerList(layer_tuple[1])
                         self.layersWidget.addItem(listItem)
@@ -682,16 +684,17 @@ class SpeckleGISDialog(QMainWindow):
                 # Fetch selected layers
                 print("populate layers from selection")
 
-                plugin.current_layers = []
-                layers = getLayers(plugin, bySelection)  # List[QgsLayerTreeNode]
+                plugin.dataStorage.current_layers = []
+                layers = getLayers(plugin, bySelection=True)  # List[QgsLayerTreeNode]
                 print(layers)
-                for i, layer in enumerate(layers):
-                    plugin.current_layers.append((layer.name, layer))
-                    listItem = self.fillLayerList(layer)
-                    self.layersWidget.addItem(listItem)
-                print("populate layers from selection 2")
-                set_project_layer_selection(plugin)
-                print("populate layers from selection 3")
+                if layers is not None:
+                    for i, layer in enumerate(layers):
+                        plugin.dataStorage.current_layers.append((layer.name, layer))
+                        listItem = self.fillLayerList(layer)
+                        self.layersWidget.addItem(listItem)
+                    print("populate layers from selection 2")
+                    set_project_layer_selection(plugin)
+                    print("populate layers from selection 3")
 
             self.layersWidget.setIconSize(QSize(20, 20))
             self.runBtnStatusChanged(plugin)
@@ -704,18 +707,6 @@ class SpeckleGISDialog(QMainWindow):
         print("Fill layer list")
 
         try:
-            ICON_XXL = os.path.dirname(os.path.abspath(__file__)) + "/size-xxl.png"
-            ICON_RASTER = (
-                os.path.dirname(os.path.abspath(__file__)) + "/legend_raster.png"
-            )
-            ICON_POLYGON = (
-                os.path.dirname(os.path.abspath(__file__)) + "/legend_polygon.png"
-            )
-            ICON_LINE = os.path.dirname(os.path.abspath(__file__)) + "/legend_line.png"
-            ICON_POINT = (
-                os.path.dirname(os.path.abspath(__file__)) + "/legend_point.png"
-            )
-
             listItem = QListWidgetItem(layer.name)
             # print(listItem)
 

@@ -6,7 +6,7 @@ try:
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from specklepy_qt_ui.qt_ui.utils.logger import logToUser
     from specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
     from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
@@ -26,7 +26,7 @@ FORM_CLASS, _ = uic.loadUiType(
 
 class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
     name_field: QtWidgets.QLineEdit = None
-    description_field: QtWidgets.QLineEdit = None
+    description: QtWidgets.QLineEdit = None
     dialog_button_box: QtWidgets.QDialogButtonBox = None
     saveSurveyPoint: QtWidgets.QPushButton = None
     speckle_client: Union[SpeckleClient, None] = None
@@ -84,6 +84,7 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
                 self.offsetYDegreeSign.show()
 
                 units = self.dataStorage.currentOriginalUnits
+                print(units)
                 if units == "degrees":
                     self.offsetXDegreeSign.setText("°")
                     self.offsetYDegreeSign.setText("°")
@@ -94,9 +95,17 @@ class CustomCRSDialog(QtWidgets.QWidget, FORM_CLASS):
                     self.offsetXDegreeSign.hide()
                     self.offsetYDegreeSign.hide()
 
+                try:
+                    authid = self.dataStorage.currentCRS.authid()
+                except:
+                    try:
+                        authid = self.dataStorage.currentCRS.name
+                    except:
+                        authid = str(self.dataStorage.currentCRS)
+
                 text = f"Use this option when your project requires a use of a specific CRS. \
                         \n\nThis will only affect Speckle data properties, not your Project CRS.\
-                        \n\nHint: your current project CRS is '{self.dataStorage.currentCRS.authid()}' and using units '{self.dataStorage.currentOriginalUnits}'."
+                        \n\nHint: your current project CRS is '{authid}' and using units '{self.dataStorage.currentOriginalUnits}'."
 
                 if units == "degrees":
                     text += "\nThis CRS is not recommended if data was sent or needs to be \

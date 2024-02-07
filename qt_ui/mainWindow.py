@@ -95,6 +95,16 @@ class SpeckleGISDialog(QMainWindow):
     saveLayerSelection: QtWidgets.QPushButton
     runButton: QtWidgets.QPushButton
     msgLog: LogWidget = None
+    custom_crs_modal = None
+
+    signal_1 = pyqtSignal(object)
+    signal_2 = pyqtSignal(object)
+    signal_3 = pyqtSignal(object)
+    signal_4 = pyqtSignal(object)
+    signal_5 = pyqtSignal(object)
+    signal_6 = pyqtSignal(object)
+    signal_remove_btn_url = pyqtSignal(str)
+    signal_cancel_operation = pyqtSignal()
 
     gridLayoutTitleBar = QtWidgets.QGridLayout
 
@@ -214,6 +224,7 @@ class SpeckleGISDialog(QMainWindow):
 
     def runSetup(self, plugin):
         # self.addDataStorage(plugin)
+        print("run setup")
         self.addLabel(plugin)
         self.addProps(plugin)
         # self.createMappingDialog()
@@ -222,6 +233,7 @@ class SpeckleGISDialog(QMainWindow):
         try:
             # add widgets that will only show on event trigger
             logWidget = LogWidget(parent=self)
+            logWidget.layout.setContentsMargins(10, 60, 10, 40)
             logWidget.dataStorage = self.dataStorage
 
             self.layout().addWidget(logWidget)
@@ -261,7 +273,7 @@ class SpeckleGISDialog(QMainWindow):
             text_label.setIcon(exitActIcon)
             text_label.setIconSize(QtCore.QSize(300, 93))
             text_label.setMinimumSize(QtCore.QSize(100, 40))
-            text_label.setMaximumWidth(250)
+            text_label.setMaximumWidth(300)
 
             version = ""
             try:

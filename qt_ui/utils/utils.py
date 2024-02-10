@@ -2,6 +2,8 @@ from textwrap import wrap
 from typing import Union
 import requests
 
+SYMBOL = "_x_x_"
+
 
 def splitTextIntoLines(text: str = "", number: int = 40) -> str:
     msg = ""

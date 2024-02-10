@@ -5,7 +5,7 @@ from typing import List, Tuple, Union
 try:
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
 
@@ -22,6 +22,7 @@ from specklepy.core.api.client import SpeckleClient
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(os.path.join(os.path.dirname(__file__), "ui", "report.ui"))
 )
+CRS_KEYWORD = "CRS"
 
 
 class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
@@ -121,22 +122,32 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
             text += "\n"
 
             # add info about the offsets
-            text += "Project CRS: " + self.dataStorage.project.crs().authid() + "\n"
+            try:
+                text += "Project CRS: " + self.dataStorage.project.crs().authid() + "\n"
+            except AttributeError:
+                CRS_KEYWORD = "Spatial Reference"
+                text += (
+                    f"Project {CRS_KEYWORD}: "
+                    + self.dataStorage.project.activeMap.spatialReference.name
+                    + "\n"
+                )
             units = self.dataStorage.latestActionUnits
             text += (
-                "Project CRS units: "
+                f"Project {CRS_KEYWORD} units: "
                 + units
                 + f"{' (not supported, treated as Meters)' if 'degrees' in units else ''}"
                 + "\n"
             )
             text += (
-                "Project CRS WKT: \n" + self.dataStorage.project.crs().toWkt() + "\n\n"
+                f"Project {CRS_KEYWORD} WKT: \n"
+                + self.dataStorage.project.crs().toWkt()
+                + "\n\n"
             )
             text += (
-                f"CRS offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
+                f"{CRS_KEYWORD} offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
                 + "\n"
             )
-            text += f"CRS rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
+            text += f"{CRS_KEYWORD} rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
 
             text += last_report
 

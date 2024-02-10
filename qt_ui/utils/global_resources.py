@@ -81,3 +81,10 @@ ICON_POINT = os.path.join(
 ICON_GENERIC = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "assets", "legend_generic.png"
 )
+ICON_PIN_ACTIVE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "assets", "pin.png"
+)
+ICON_PIN_DISABLED = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "assets", "pin-outline.png"
+)
+

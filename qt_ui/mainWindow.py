@@ -57,6 +57,8 @@ from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import (
     ICON_SEARCH,
     ICON_DELETE,
     ICON_DELETE_BLUE,
+    ICON_PIN_ACTIVE,
+    ICON_PIN_DISABLED,
     ICON_SEND,
     ICON_RECEIVE,
     ICON_SEND_BLACK,
@@ -84,6 +86,8 @@ ui_file_path = os.path.join(
 
 class SpeckleGISDialog(QMainWindow):
 
+    on_top: bool = True
+    pin_label: QtWidgets.QPushButton
     closingPlugin = pyqtSignal()
     streamList: QtWidgets.QComboBox
     sendModeButton: QtWidgets.QPushButton
@@ -111,9 +115,7 @@ class SpeckleGISDialog(QMainWindow):
     def __init__(self, parent=None):
         """Constructor."""
         print("START MAIN WINDOW")
-        super(SpeckleGISDialog, self).__init__(
-            parent
-        )  # , QtCore.Qt.WindowStaysOnTopHint)
+        super(SpeckleGISDialog, self).__init__(parent, QtCore.Qt.WindowStaysOnTopHint)
         uic.loadUi(ui_file_path, self)  # Load the .ui file
         # self.show()
         self.runAllSetup()
@@ -217,7 +219,7 @@ class SpeckleGISDialog(QMainWindow):
             self.runButton.setIcon(QIcon(ICON_SEND))
 
             # insert checkbox
-            l = self.verticalLayout
+            # l = self.verticalLayout
 
         except Exception as e:
             logToUser(str(e), level=2, func=inspect.stack()[0][3], plugin=self)
@@ -300,15 +302,38 @@ class SpeckleGISDialog(QMainWindow):
             boxLayout = QHBoxLayout(widget)
             boxLayout.addWidget(text_label)  # , alignment=Qt.AlignCenter)
             boxLayout.addWidget(version_label)
-            boxLayout.setContentsMargins(0, 0, 0, 0)
+            boxLayout.setContentsMargins(0, 0, 30, 0)
             self.setWindowTitle("SpeckleArcGIS")
             self.gridLayoutTitleBar.addWidget(widget)  # fro QMainWindow
             # self.setTitleBarWidget(widget) # for dockwidget
             self.labelWidget = text_label
             self.labelWidget.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
             self.labelWidget.clicked.connect(self.onClickLogo)
+
+            pin_label = QtWidgets.QPushButton("")
+            pin_label.setIcon(QIcon(ICON_PIN_ACTIVE))
+            pin_label.setMaximumWidth(25)
+            # pin_label.setFlat(True)
+            pin_label.setStyleSheet("QPushButton {border: none;}")
+            boxLayout.addWidget(pin_label)
+            pin_label.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+            self.pin_label = pin_label
+            self.pin_label.clicked.connect(self.pinWindow)
+
         except Exception as e:
             logToUser(e)
+
+    def pinWindow(self):
+        if self.on_top == True:
+            self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, False)
+            self.pin_label.setIcon(QIcon(ICON_PIN_DISABLED))
+            self.on_top = False
+            self.show()
+        else:
+            self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+            self.pin_label.setIcon(QIcon(ICON_PIN_ACTIVE))
+            self.on_top = True
+            self.show()
 
     def addDataStorage(self, plugin):
         self.dataStorage = plugin.dataStorage

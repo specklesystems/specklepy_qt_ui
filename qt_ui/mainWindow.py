@@ -40,7 +40,7 @@ import arcpy
 import inspect
 
 # from speckle.speckle_arcgis_new import Speckle
-from speckle.speckle.converter.layers import getLayers, getAllProjLayers
+from speckle.speckle.converter.layers import getLayersWithStructure, getAllProjLayers
 from speckle.speckle.utils.panel_logging import logToUser
 from speckle.specklepy_qt_ui.qt_ui.LogWidget import LogWidget
 from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURL
@@ -710,16 +710,18 @@ class SpeckleGISDialog(QMainWindow):
                 print("populate layers from selection")
 
                 plugin.dataStorage.current_layers = []
-                layers = getLayers(plugin, bySelection=True)  # List[QgsLayerTreeNode]
-                print(layers)
+                layers, structure = getLayersWithStructure(
+                    plugin, bySelection=True
+                )  # List[QgsLayerTreeNode]
+                #print(layers)
                 if layers is not None:
                     for i, layer in enumerate(layers):
                         plugin.dataStorage.current_layers.append((layer.name, layer))
                         listItem = self.fillLayerList(layer)
                         self.layersWidget.addItem(listItem)
-                    print("populate layers from selection 2")
+                    #print("populate layers from selection 2")
                     set_project_layer_selection(plugin)
-                    print("populate layers from selection 3")
+                    #print("populate layers from selection 3")
 
             self.layersWidget.setIconSize(QSize(20, 20))
             self.runBtnStatusChanged(plugin)
@@ -729,7 +731,7 @@ class SpeckleGISDialog(QMainWindow):
             logToUser(str(e), level=2, func=inspect.stack()[0][3], plugin=self)
 
     def fillLayerList(self, layer):
-        print("Fill layer list")
+        #print("Fill layer list")
 
         try:
             listItem = QListWidgetItem(layer.name)

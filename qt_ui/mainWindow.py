@@ -86,7 +86,7 @@ ui_file_path = os.path.join(
 
 class SpeckleGISDialog(QMainWindow):
 
-    on_top: bool = True
+    on_top: bool = False
     pin_label: QtWidgets.QPushButton
     closingPlugin = pyqtSignal()
     streamList: QtWidgets.QComboBox
@@ -115,7 +115,9 @@ class SpeckleGISDialog(QMainWindow):
     def __init__(self, parent=None):
         """Constructor."""
         print("START MAIN WINDOW")
-        super(SpeckleGISDialog, self).__init__(parent, QtCore.Qt.WindowStaysOnTopHint)
+        super(SpeckleGISDialog, self).__init__(
+            parent
+        )  # , QtCore.Qt.WindowStaysOnTopHint)
         uic.loadUi(ui_file_path, self)  # Load the .ui file
         # self.show()
         self.runAllSetup()
@@ -311,7 +313,7 @@ class SpeckleGISDialog(QMainWindow):
             self.labelWidget.clicked.connect(self.onClickLogo)
 
             pin_label = QtWidgets.QPushButton("")
-            pin_label.setIcon(QIcon(ICON_PIN_ACTIVE))
+            pin_label.setIcon(QIcon(ICON_PIN_DISABLED))
             pin_label.setMaximumWidth(25)
             # pin_label.setFlat(True)
             pin_label.setStyleSheet("QPushButton {border: none;}")
@@ -713,15 +715,15 @@ class SpeckleGISDialog(QMainWindow):
                 layers, structure = getLayersWithStructure(
                     plugin, bySelection=True
                 )  # List[QgsLayerTreeNode]
-                #print(layers)
+                # print(layers)
                 if layers is not None:
                     for i, layer in enumerate(layers):
                         plugin.dataStorage.current_layers.append((layer.name, layer))
                         listItem = self.fillLayerList(layer)
                         self.layersWidget.addItem(listItem)
-                    #print("populate layers from selection 2")
+                    # print("populate layers from selection 2")
                     set_project_layer_selection(plugin)
-                    #print("populate layers from selection 3")
+                    # print("populate layers from selection 3")
 
             self.layersWidget.setIconSize(QSize(20, 20))
             self.runBtnStatusChanged(plugin)
@@ -731,7 +733,7 @@ class SpeckleGISDialog(QMainWindow):
             logToUser(str(e), level=2, func=inspect.stack()[0][3], plugin=self)
 
     def fillLayerList(self, layer):
-        #print("Fill layer list")
+        # print("Fill layer list")
 
         try:
             listItem = QListWidgetItem(layer.name)

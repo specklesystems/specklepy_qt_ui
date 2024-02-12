@@ -24,7 +24,6 @@ from specklepy.core.api.client import SpeckleClient
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(os.path.join(os.path.dirname(__file__), "ui", "report.ui"))
 )
-CRS_KEYWORD = "CRS"
 
 
 class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
@@ -129,27 +128,28 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
             try:
                 crs = self.dataStorage.project.crs()
                 text += "Project CRS: " + crs.authid() + "\n"
+                crs_keyword = "CRS"
             except AttributeError:
                 crs = self.dataStorage.project.activeMap.spatialReference
-                CRS_KEYWORD = "Spatial Reference"
-                text += f"Project {CRS_KEYWORD}: " + crs.name + "\n"
+                crs_keyword = "Spatial Reference"
+                text += f"Project {crs_keyword}: " + crs.name + "\n"
             units = self.dataStorage.latestActionUnits
             text += (
-                f"Project {CRS_KEYWORD} units: "
+                f"Project {crs_keyword} units: "
                 + units
                 + f"{' (not supported, treated as Meters)' if 'degrees' in units else ''}"
                 + "\n"
             )
             try:
-                text += f"Project {CRS_KEYWORD} WKT: \n" + crs.toWkt() + "\n\n"
+                text += f"Project {crs_keyword} WKT: \n" + crs.toWkt() + "\n\n"
             except:
-                text += f"Project {CRS_KEYWORD} WKT: \n" + crs.exportToString() + "\n\n"
+                text += f"Project {crs_keyword} WKT: \n" + crs.exportToString() + "\n\n"
 
             text += (
-                f"{CRS_KEYWORD} offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
+                f"{crs_keyword} offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
                 + "\n"
             )
-            text += f"{CRS_KEYWORD} rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
+            text += f"{crs_keyword} rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
 
             text += last_report
 

@@ -5,7 +5,7 @@ import webbrowser
 
 try:
     from specklepy_qt_ui.qt_ui.utils.logger import logToUser
-except ModuleNotFoundError: 
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
 
 from specklepy.core.api.credentials import get_local_accounts
@@ -22,6 +22,7 @@ class DataStorage:
     currentCRS = None
     currentUnits = "m"
     currentOriginalUnits = ""
+    workspace = ""
 
     custom_lat: Optional[float] = None
     custom_lon: Optional[float] = None

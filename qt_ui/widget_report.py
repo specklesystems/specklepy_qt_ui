@@ -5,9 +5,11 @@ from typing import List, Tuple, Union
 try:
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
-except ModuleNotFoundError: 
+    from specklepy_qt_ui.qt_ui.utils.utils import SYMBOL
+except ModuleNotFoundError:
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import COLOR
+    from speckle.specklepy_qt_ui.qt_ui.utils.utils import SYMBOL
 
 # from specklepy_qt_ui.qt_ui.utils.logger import logToUser
 
@@ -22,6 +24,7 @@ from specklepy.core.api.client import SpeckleClient
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(os.path.join(os.path.dirname(__file__), "ui", "report.ui"))
 )
+CRS_KEYWORD = "CRS"
 
 
 class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
@@ -50,7 +53,7 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
         try:
             if self.dataStorage is None:
                 return
-            reportList = self.dataStorage.latestActionReport
+            reportList: List[dict] = self.dataStorage.latestActionReport
             if reportList is None:
                 return
 
@@ -66,11 +69,13 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
             for item in reportList:
                 line = "✅ "
                 try:  # if sending
-                    line += f'{item["feature_id"]}: {item["obj_type"]}'
+                    some_id = item["feature_id"].replace(SYMBOL, "\\")
+                    line += f'{some_id}: {item["obj_type"]}'
                     operation = f"Sent at {self.dataStorage.latestActionTime}"
                 except:  # if receiving
                     sending = False
-                    line += f'{item["speckle_id"]}: {item["obj_type"]}'
+                    some_id = item[list(item.keys())[0]].replace(SYMBOL, "\\")
+                    line += f'{some_id}: {item["obj_type"]}'  # f'{item["speckle_id"]}: {item["obj_type"]}'
                     operation = f"Received at {self.dataStorage.latestActionTime}"
 
                 # edit based on the type
@@ -121,22 +126,30 @@ class ReportDialog(QtWidgets.QWidget, FORM_CLASS):
             text += "\n"
 
             # add info about the offsets
-            text += "Project CRS: " + self.dataStorage.project.crs().authid() + "\n"
+            try:
+                crs = self.dataStorage.project.crs()
+                text += "Project CRS: " + crs.authid() + "\n"
+            except AttributeError:
+                crs = self.dataStorage.project.activeMap.spatialReference
+                CRS_KEYWORD = "Spatial Reference"
+                text += f"Project {CRS_KEYWORD}: " + crs.name + "\n"
             units = self.dataStorage.latestActionUnits
             text += (
-                "Project CRS units: "
+                f"Project {CRS_KEYWORD} units: "
                 + units
                 + f"{' (not supported, treated as Meters)' if 'degrees' in units else ''}"
                 + "\n"
             )
+            try:
+                text += f"Project {CRS_KEYWORD} WKT: \n" + crs.toWkt() + "\n\n"
+            except:
+                text += f"Project {CRS_KEYWORD} WKT: \n" + crs.exportToString() + "\n\n"
+
             text += (
-                "Project CRS WKT: \n" + self.dataStorage.project.crs().toWkt() + "\n\n"
-            )
-            text += (
-                f"CRS offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
+                f"{CRS_KEYWORD} offsets: x={self.dataStorage.crs_offset_x}, y={self.dataStorage.crs_offset_y}"
                 + "\n"
             )
-            text += f"CRS rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
+            text += f"{CRS_KEYWORD} rotation: {self.dataStorage.crs_rotation}°" + "\n\n"
 
             text += last_report
 

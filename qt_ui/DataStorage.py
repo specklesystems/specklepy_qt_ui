@@ -54,6 +54,9 @@ class DataStorage:
     latestActionLayers: Optional[list] = None
     latestActionUnits: str = ""
 
+    flat_report_receive: dict = {}
+    flat_report_latest: dict = {}
+
     def __init__(self):
         # print("hello")
         # self.streamsToFollow.append(("https://speckle.xyz/streams/17b0b76d13/branches/random_tests", "", "09a0f3e41a"))

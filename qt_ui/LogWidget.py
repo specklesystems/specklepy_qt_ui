@@ -9,19 +9,38 @@ import webbrowser
 from specklepy.logging import metrics
 from specklepy.core.api.credentials import Account
 
-from specklepy_qt_ui.qt_ui.global_resources import (
-    BACKGR_COLOR,
-    BACKGR_COLOR_LIGHT,
-    BACKGR_COLOR_GREY,
-    BACKGR_COLOR_TRANSPARENT,
-    BACKGR_COLOR_HIGHLIGHT,
-    NEW_GREY,
-    NEW_GREY_HIGHLIGHT,
-    BACKGR_ERROR_COLOR,
-    BACKGR_ERROR_COLOR_LIGHT,
-)
-from specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import DependenciesUpgradeDialog
-from specklepy_qt_ui.qt_ui.widget_report import ReportDialog
+try:
+    from specklepy_qt_ui.qt_ui.utils.global_resources import (
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        BACKGR_COLOR_GREY,
+        BACKGR_COLOR_TRANSPARENT,
+        BACKGR_COLOR_HIGHLIGHT,
+        NEW_GREY,
+        NEW_GREY_HIGHLIGHT,
+        BACKGR_ERROR_COLOR,
+        BACKGR_ERROR_COLOR_LIGHT,
+    )
+    from specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import (
+        DependenciesUpgradeDialog,
+    )
+    from specklepy_qt_ui.qt_ui.widget_report import ReportDialog
+except ModuleNotFoundError:
+    from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import (
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        BACKGR_COLOR_GREY,
+        BACKGR_COLOR_TRANSPARENT,
+        BACKGR_COLOR_HIGHLIGHT,
+        NEW_GREY,
+        NEW_GREY_HIGHLIGHT,
+        BACKGR_ERROR_COLOR,
+        BACKGR_ERROR_COLOR_LIGHT,
+    )
+    from speckle.specklepy_qt_ui.qt_ui.widget_dependencies_upgrade import (
+        DependenciesUpgradeDialog,
+    )
+    from speckle.specklepy_qt_ui.qt_ui.widget_report import ReportDialog
 
 
 class LogWidget(QWidget):
@@ -268,20 +287,22 @@ class LogWidget(QWidget):
 
     def getNextBtn(self):
         index = len(self.used_btns)  # get the next "free" button
-        # print(index)
-        # print(self.btns)
-
         if index >= len(self.btns):
             # remove first button
             print(self.layout.itemAt(0).widget())
             self.layout.itemAt(0).widget().setParent(None)
-
-            # self.used_btns.clear()
             self.createBtns()
             index = 0
-
         btn = self.btns[index]
-        # print(btn)
+
+        return btn, index
+
+    def getLastBtn(self):
+        index = len(self.used_btns) - 1  # get the next "free" button
+        btn = None
+        if index > 0:
+            btn = self.btns[index]
+
         return btn, index
 
     def getBtnByKeyword(self, keyword: str):

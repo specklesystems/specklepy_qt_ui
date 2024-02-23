@@ -1,7 +1,11 @@
 import inspect
 import os
 from typing import List, Tuple, Union
-from specklepy_qt_ui.qt_ui.logger import logToUser
+
+try:
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -37,7 +41,7 @@ class CreateStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
         )
         self.speckle_client = speckle_client
         self.setupUi(self)
-        self.setWindowTitle("Create New Project")
+        self.setWindowTitle("Create New Stream")
 
         self.name_field.textChanged.connect(self.nameCheck)
         self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True)

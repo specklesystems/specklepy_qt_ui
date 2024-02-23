@@ -2,9 +2,14 @@ import inspect
 import os
 from typing import List, Union
 import urllib.parse
-
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.qt_ui.logger import logToUser
+try:
+    from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -16,7 +21,6 @@ from specklepy.core.api.credentials import get_local_accounts  # , StreamWrapper
 from specklepy.core.api.wrapper import StreamWrapper
 from specklepy.logging import metrics
 
-from specklepy_qt_ui.qt_ui.utils import constructCommitURLfromServerCommit
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -46,7 +50,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
         )
         self.speckle_client = speckle_client
         self.setupUi(self)
-        self.setWindowTitle("Add Speckle Project")
+        self.setWindowTitle("Add Speckle stream")
 
         self.dialog_button_box.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(False)
 
@@ -89,7 +93,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         "Connector Action",
                         self.dataStorage.active_account,
                         {
-                            "name": "Project Search By Name",
+                            "name": "Stream Search By Name",
                             "connector_version": str(self.dataStorage.plugin_version),
                         },
                     )
@@ -149,7 +153,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         "Connector Action",
                         self.dataStorage.active_account,
                         {
-                            "name": "Project Search By URL",
+                            "name": "Stream Search By URL",
                             "connector_version": str(self.dataStorage.plugin_version),
                         },
                     )
@@ -163,7 +167,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                         "Connector Action",
                         self.dataStorage.active_account,
                         {
-                            "name": "Project Search By Name",
+                            "name": "Stream Search By Name",
                             "connector_version": str(self.dataStorage.plugin_version),
                         },
                     )
@@ -191,7 +195,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
             self.search_results_list.clear()
             if isinstance(self.stream_results, SpeckleException):
                 logToUser(
-                    "Some Projects cannot be accessed",
+                    "Some streams cannot be accessed",
                     level=1,
                     func=inspect.stack()[0][3],
                 )
@@ -205,7 +209,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
 
                 if isinstance(stream, SpeckleException):
                     logToUser(
-                        "Some Projects cannot be accessed",
+                        "Some streams cannot be accessed",
                         level=1,
                         func=inspect.stack()[0][3],
                     )
@@ -223,7 +227,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
         try:
             if isinstance(self.stream_results, SpeckleException):
                 logToUser(
-                    "Selected Project cannot be accessed: "
+                    "Selected stream cannot be accessed: "
                     + str(self.stream_results.message),
                     level=1,
                     func=inspect.stack()[0][3],
@@ -261,7 +265,7 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
                     self.close()
                 except Exception as e:
                     logToUser(
-                        "Some Projects cannot be accessed: " + str(e),
+                        "Some streams cannot be accessed: " + str(e),
                         level=1,
                         func=inspect.stack()[0][3],
                     )

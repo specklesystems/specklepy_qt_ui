@@ -3,7 +3,11 @@ import inspect
 from typing import List, Optional, Tuple, Union, Any
 import webbrowser
 
-from speckle.utils.panel_logging import logToUser
+try:
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+except ModuleNotFoundError:
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+
 from specklepy.core.api.credentials import get_local_accounts
 
 
@@ -18,6 +22,7 @@ class DataStorage:
     currentCRS = None
     currentUnits = "m"
     currentOriginalUnits = ""
+    workspace = ""
 
     custom_lat: Optional[float] = None
     custom_lon: Optional[float] = None
@@ -48,6 +53,9 @@ class DataStorage:
     latestConversionTime: datetime = None
     latestActionLayers: Optional[list] = None
     latestActionUnits: str = ""
+
+    flat_report_receive: dict = {}
+    flat_report_latest: dict = {}
 
     def __init__(self):
         # print("hello")

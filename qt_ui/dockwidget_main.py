@@ -4,37 +4,71 @@ from copy import copy
 import inspect
 import os
 
-from specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
-from specklepy_qt_ui.qt_ui.LogWidget import LogWidget
-from specklepy_qt_ui.qt_ui.logger import logToUser
-from specklepy_qt_ui.qt_ui.utils import constructCommitURL
-from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
-from specklepy_qt_ui.qt_ui.global_resources import (
-    COLOR_HIGHLIGHT,
-    SPECKLE_COLOR,
-    SPECKLE_COLOR_LIGHT,
-    ICON_OPEN_WEB,
-    ICON_REPORT,
-    ICON_LOGO,
-    ICON_SEARCH,
-    ICON_DELETE,
-    ICON_DELETE_BLUE,
-    ICON_SEND,
-    ICON_RECEIVE,
-    ICON_SEND_BLACK,
-    ICON_RECEIVE_BLACK,
-    ICON_SEND_BLUE,
-    ICON_RECEIVE_BLUE,
-    COLOR,
-    BACKGR_COLOR,
-    BACKGR_COLOR_LIGHT,
-    ICON_XXL,
-    ICON_RASTER,
-    ICON_POLYGON,
-    ICON_LINE,
-    ICON_POINT,
-    ICON_GENERIC,
-)
+try:
+    from specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
+    from specklepy_qt_ui.qt_ui.LogWidget import LogWidget
+    from specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from specklepy_qt_ui.qt_ui.utils.utils import constructCommitURL
+    from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from specklepy_qt_ui.qt_ui.utils.global_resources import (
+        COLOR_HIGHLIGHT,
+        SPECKLE_COLOR,
+        SPECKLE_COLOR_LIGHT,
+        ICON_OPEN_WEB,
+        ICON_REPORT,
+        ICON_LOGO,
+        ICON_SEARCH,
+        ICON_DELETE,
+        ICON_DELETE_BLUE,
+        ICON_SEND,
+        ICON_RECEIVE,
+        ICON_SEND_BLACK,
+        ICON_RECEIVE_BLACK,
+        ICON_SEND_BLUE,
+        ICON_RECEIVE_BLUE,
+        COLOR,
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        ICON_XXL,
+        ICON_RASTER,
+        ICON_POLYGON,
+        ICON_LINE,
+        ICON_POINT,
+        ICON_GENERIC,
+    )
+except ModuleNotFoundError: 
+    from speckle.specklepy_qt_ui.qt_ui.widget_transforms import MappingSendDialog
+    from speckle.specklepy_qt_ui.qt_ui.LogWidget import LogWidget
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
+    from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURL
+    from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
+    from speckle.specklepy_qt_ui.qt_ui.utils.global_resources import (
+        COLOR_HIGHLIGHT,
+        SPECKLE_COLOR,
+        SPECKLE_COLOR_LIGHT,
+        ICON_OPEN_WEB,
+        ICON_REPORT,
+        ICON_LOGO,
+        ICON_SEARCH,
+        ICON_DELETE,
+        ICON_DELETE_BLUE,
+        ICON_SEND,
+        ICON_RECEIVE,
+        ICON_SEND_BLACK,
+        ICON_RECEIVE_BLACK,
+        ICON_SEND_BLUE,
+        ICON_RECEIVE_BLUE,
+        COLOR,
+        BACKGR_COLOR,
+        BACKGR_COLOR_LIGHT,
+        ICON_XXL,
+        ICON_RASTER,
+        ICON_POLYGON,
+        ICON_LINE,
+        ICON_POINT,
+        ICON_GENERIC,
+    )
+
 from specklepy.logging.exceptions import SpeckleException, GraphQLException
 from specklepy.logging import metrics
 
@@ -775,7 +809,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             self.streamBranchDropdown.clear()  # activates "populate commit"
             # print(2)
             if isinstance(plugin.active_stream[1], SpeckleException):
-                logToUser("Some Projects cannot be accessed", level=1, plugin=self)
+                logToUser("Some streams cannot be accessed", level=1, plugin=self)
                 return
             elif (
                 plugin.active_stream is None
@@ -791,7 +825,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
             # print(4)
-            self.streamBranchDropdown.addItems(["Create New Model"])
+            self.streamBranchDropdown.addItems(["Create New Branch"])
             # print(5)
             if keep_branch is True:
                 plugin.active_branch = active_branch
@@ -830,13 +864,13 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print("________populateActiveCommitDropdown")
             # print(plugin.active_commit)
             if plugin.active_stream is None:
-                print("Active project is None")
+                print("Active stream is None")
                 return
             branchName = self.streamBranchDropdown.currentText()
             # print(f"CURRENT BRANCH TEXT: {branchName}")
             if branchName == "":
                 return
-            if branchName == "Create New Model":
+            if branchName == "Create New Branch":
                 self.streamBranchDropdown.setCurrentText("main")
                 plugin.onBranchCreateClicked()
                 return
@@ -846,7 +880,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             # print(plugin.active_commit)
             self.commitDropdown.clear()
             if isinstance(plugin.active_stream[1], SpeckleException):
-                logToUser("Some Projects cannot be accessed", level=1, plugin=self)
+                logToUser("Some streams cannot be accessed", level=1, plugin=self)
                 return
             elif plugin.active_stream[1]:
                 for b in plugin.active_stream[1].branches.items:
@@ -898,7 +932,7 @@ class SpeckleQGISDialog(QtWidgets.QDockWidget, FORM_CLASS):
             else:
                 plugin.active_commit = None
 
-            self.commitDropdown.setItemText(0, "Latest version of this model")
+            self.commitDropdown.setItemText(0, "Latest commit from this branch")
             # enable or disable web view button
             # print("_________ENABLE OR DISABLE")
             # print(plugin.active_commit)

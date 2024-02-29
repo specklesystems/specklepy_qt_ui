@@ -854,7 +854,7 @@ class SpeckleGISDialog(QMainWindow):
                 [f"{branch.name}" for branch in plugin.active_stream[1].branches.items]
             )
             # print(4)
-            self.streamBranchDropdown.addItems(["Create New Branch"])
+            self.streamBranchDropdown.addItems(["Create New Model"])
             # print(5)
             if keep_branch is True:
                 plugin.active_branch = active_branch
@@ -895,7 +895,7 @@ class SpeckleGISDialog(QMainWindow):
             # print(f"CURRENT BRANCH TEXT: {branchName}")
             if branchName == "":
                 return
-            if branchName == "Create New Branch":
+            if branchName == "Create New Model":
                 self.streamBranchDropdown.setCurrentText("main")
                 plugin.onBranchCreateClicked()
                 return

@@ -4,7 +4,6 @@ import sys
 from typing import List
 
 # from speckle.speckle.converter.layers import getLayers
-# from speckle.converter.layers import getLayers
 
 # import ui.speckle_qgis_dialog
 

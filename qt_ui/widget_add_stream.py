@@ -2,14 +2,17 @@ import inspect
 import os
 from typing import List, Union
 import urllib.parse
+
 try:
     from specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from specklepy_qt_ui.qt_ui.utils.logger import logToUser
     from specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
+    from specklepy_qt_ui.qt_ui.utils.logger import displayUserMsg
 except ModuleNotFoundError: 
     from speckle.specklepy_qt_ui.qt_ui.DataStorage import DataStorage
     from speckle.specklepy_qt_ui.qt_ui.utils.logger import logToUser
     from speckle.specklepy_qt_ui.qt_ui.utils.utils import constructCommitURLfromServerCommit
+    from speckle.specklepy_qt_ui.qt_ui.utils.logger import displayUserMsg
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSignal
@@ -188,6 +191,10 @@ class AddStreamModalDialog(QtWidgets.QWidget, FORM_CLASS):
 
         except Exception as e:
             logToUser(e, level=2, func=inspect.stack()[0][3])
+            if isinstance(e, SpeckleException):
+                displayUserMsg(e.message, level=2)
+            else:
+                displayUserMsg(str(e), level=2)
             return
 
     def populateResultsList(self, sw=None):
